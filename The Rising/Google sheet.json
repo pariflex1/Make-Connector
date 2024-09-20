@@ -1,0 +1,395 @@
+{
+    "name": "Integration WhatsApp Business Cloud",
+    "flow": [
+        {
+            "id": 3,
+            "module": "google-sheets:getSheetContent",
+            "version": 2,
+            "parameters": {
+                "__IMTCONN__": 839038
+            },
+            "mapper": {
+                "from": "drive",
+                "range": "A2:B101",
+                "select": "list",
+                "sheetId": "Send",
+                "spreadsheetId": "/1HhOZTWv5UYll4QAtJk6gPDVXv4mt5127n5AaTdBZbag",
+                "includesHeaders": false,
+                "valueRenderOption": "FORMATTED_VALUE",
+                "dateTimeRenderOption": "FORMATTED_STRING"
+            },
+            "metadata": {
+                "designer": {
+                    "x": 0,
+                    "y": 0
+                },
+                "restore": {
+                    "expect": {
+                        "from": {
+                            "label": "My Drive"
+                        },
+                        "select": {
+                            "label": "Select from the list"
+                        },
+                        "sheetId": {
+                            "label": "Send"
+                        },
+                        "spreadsheetId": {
+                            "path": [
+                                "The Risign"
+                            ]
+                        },
+                        "includesHeaders": {
+                            "mode": "chose"
+                        },
+                        "valueRenderOption": {
+                            "mode": "chose",
+                            "label": "Formatted value"
+                        },
+                        "dateTimeRenderOption": {
+                            "mode": "chose",
+                            "label": "Formatted string"
+                        }
+                    },
+                    "parameters": {
+                        "__IMTCONN__": {
+                            "data": {
+                                "scoped": "true",
+                                "connection": "google"
+                            },
+                            "label": "My Google connection (dhanistadigital@gmail.com)"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "__IMTCONN__",
+                        "type": "account:google",
+                        "label": "Connection",
+                        "required": true
+                    }
+                ],
+                "expect": [
+                    {
+                        "name": "select",
+                        "type": "select",
+                        "label": "Enter a Spreadsheet and Sheet ID",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                "map",
+                                "fromAll",
+                                "list"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "range",
+                        "type": "text",
+                        "label": "Range",
+                        "required": true
+                    },
+                    {
+                        "name": "includesHeaders",
+                        "type": "boolean",
+                        "label": "Table contains headers",
+                        "required": true
+                    },
+                    {
+                        "name": "valueRenderOption",
+                        "type": "select",
+                        "label": "Value render option",
+                        "validate": {
+                            "enum": [
+                                "FORMATTED_VALUE",
+                                "UNFORMATTED_VALUE",
+                                "FORMULA"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "dateTimeRenderOption",
+                        "type": "select",
+                        "label": "Date and time render option",
+                        "validate": {
+                            "enum": [
+                                "SERIAL_NUMBER",
+                                "FORMATTED_STRING"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "from",
+                        "type": "select",
+                        "label": "Choose a Drive",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                "drive",
+                                "share",
+                                "team"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "spreadsheetId",
+                        "type": "file",
+                        "label": "Spreadsheet ID",
+                        "required": true
+                    },
+                    {
+                        "name": "sheetId",
+                        "type": "select",
+                        "label": "Sheet Name",
+                        "required": true
+                    }
+                ],
+                "interface": [
+                    {
+                        "name": "__ROW_NUMBER__",
+                        "type": "number",
+                        "label": "Row number"
+                    },
+                    {
+                        "name": "__SPREADSHEET_ID__",
+                        "type": "text",
+                        "label": "Spreadsheet ID"
+                    },
+                    {
+                        "name": "__SHEET__",
+                        "type": "text",
+                        "label": "Sheet"
+                    },
+                    {
+                        "name": "0",
+                        "type": "text",
+                        "label": "A"
+                    },
+                    {
+                        "name": "1",
+                        "type": "text",
+                        "label": "B"
+                    }
+                ]
+            }
+        },
+        {
+            "id": 4,
+            "module": "whatsapp-business-cloud:sendTemplateMessage",
+            "version": 1,
+            "parameters": {
+                "__IMTCONN__": 839013
+            },
+            "mapper": {
+                "to": "{{3.`1`}}",
+                "body": {
+                    "body_0": "{{3.`0`}}"
+                },
+                "fromId": "203347212863328",
+                "header": {
+                    "image": {
+                        "id": "336073016013881"
+                    }
+                },
+                "buttons": {
+                    "button_0": {}
+                },
+                "messageTemplate": "rising::en_US"
+            },
+            "metadata": {
+                "designer": {
+                    "x": 300,
+                    "y": 0
+                },
+                "restore": {
+                    "expect": {
+                        "fromId": {
+                            "mode": "chose",
+                            "label": "PF Digital Chat (+91 63941 72884)"
+                        },
+                        "messageTemplate": {
+                            "label": "rising (en_US)",
+                            "nested": [
+                                {
+                                    "name": "header",
+                                    "spec": [
+                                        {
+                                            "name": "image",
+                                            "spec": [
+                                                {
+                                                    "help": "Either `Media ID` or `Media URL` must be provided.",
+                                                    "name": "id",
+                                                    "type": "text",
+                                                    "label": "Media ID"
+                                                },
+                                                {
+                                                    "help": "Either `Media ID` or `Media URL` must be provided.",
+                                                    "name": "link",
+                                                    "type": "url",
+                                                    "label": "Media URL"
+                                                }
+                                            ],
+                                            "type": "collection",
+                                            "label": "Image"
+                                        }
+                                    ],
+                                    "type": "collection",
+                                    "label": "Header"
+                                },
+                                {
+                                    "name": "body",
+                                    "spec": [
+                                        {
+                                            "type": "html",
+                                            "label": "<pre>नमस्कार, *{{1}}* जी 🙏\n*The Rising* की ओर से खास आपके लिए प्रॉपर्टी में निवेश करने का सुनहरा अवसर।\n\n👉 झाँसी की विभिन्न लोकेशनों पर \n🔥 प्लॉट (आवासीय)\n🔥 प्लॉट (कॉमर्शियल)\n🔥 डुप्लेक्स (3BHK)</pre>"
+                                        },
+                                        {
+                                            "name": "body_0",
+                                            "type": "text",
+                                            "label": "{{1}}",
+                                            "required": true
+                                        }
+                                    ],
+                                    "type": "collection",
+                                    "label": "Body"
+                                },
+                                {
+                                    "name": "buttons",
+                                    "spec": [
+                                        {
+                                            "name": "button_0",
+                                            "spec": [
+                                                {
+                                                    "help": "Payload that is returned when the button is clicked in addition to the display text on the button.",
+                                                    "name": "quick_reply::payload",
+                                                    "type": "text",
+                                                    "label": "Payload"
+                                                }
+                                            ],
+                                            "type": "collection",
+                                            "label": "अधिक जानकारी चाहते हैं?"
+                                        }
+                                    ],
+                                    "type": "collection",
+                                    "label": "Buttons"
+                                }
+                            ]
+                        }
+                    },
+                    "parameters": {
+                        "__IMTCONN__": {
+                            "data": {
+                                "scoped": "true",
+                                "connection": "whatsapp-business-cloud2"
+                            },
+                            "label": "My WhatsApp Business Cloud connection (The Rising)"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "__IMTCONN__",
+                        "type": "account:whatsapp-business-cloud2",
+                        "label": "Connection",
+                        "required": true
+                    }
+                ],
+                "expect": [
+                    {
+                        "name": "fromId",
+                        "type": "select",
+                        "label": "Sender ID",
+                        "required": true
+                    },
+                    {
+                        "name": "to",
+                        "type": "text",
+                        "label": "Receiver",
+                        "required": true
+                    },
+                    {
+                        "name": "messageTemplate",
+                        "type": "select",
+                        "label": "Message Template",
+                        "required": true
+                    },
+                    {
+                        "name": "header",
+                        "spec": [
+                            {
+                                "name": "image",
+                                "spec": [
+                                    {
+                                        "name": "id",
+                                        "type": "text",
+                                        "label": "Media ID"
+                                    },
+                                    {
+                                        "name": "link",
+                                        "type": "url",
+                                        "label": "Media URL"
+                                    }
+                                ],
+                                "type": "collection",
+                                "label": "Image"
+                            }
+                        ],
+                        "type": "collection",
+                        "label": "Header"
+                    },
+                    {
+                        "name": "body",
+                        "spec": [
+                            {
+                                "name": "body_0",
+                                "type": "text",
+                                "label": "{{1}}",
+                                "required": true
+                            }
+                        ],
+                        "type": "collection",
+                        "label": "Body"
+                    },
+                    {
+                        "name": "buttons",
+                        "spec": [
+                            {
+                                "name": "button_0",
+                                "spec": [
+                                    {
+                                        "name": "quick_reply::payload",
+                                        "type": "text",
+                                        "label": "Payload"
+                                    }
+                                ],
+                                "type": "collection",
+                                "label": "अधिक जानकारी चाहते हैं?"
+                            }
+                        ],
+                        "type": "collection",
+                        "label": "Buttons"
+                    }
+                ]
+            }
+        }
+    ],
+    "metadata": {
+        "instant": false,
+        "version": 1,
+        "scenario": {
+            "roundtrips": 1,
+            "maxErrors": 3,
+            "autoCommit": true,
+            "autoCommitTriggerLast": true,
+            "sequential": false,
+            "confidential": false,
+            "dataloss": false,
+            "dlq": false,
+            "freshVariables": false
+        },
+        "designer": {
+            "orphans": []
+        },
+        "zone": "eu2.make.com"
+    }
+}

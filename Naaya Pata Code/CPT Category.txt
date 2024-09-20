@@ -1,0 +1,34 @@
+// Register Taxonomy Property Category
+function create_propertycategory_tax() {
+
+	$labels = array(
+		'name'              => _x( 'Property Categories', 'taxonomy general name', 'textdomain' ),
+		'singular_name'     => _x( 'Property Category', 'taxonomy singular name', 'textdomain' ),
+		'search_items'      => __( 'Search Property Categories', 'textdomain' ),
+		'all_items'         => __( 'All Property Categories', 'textdomain' ),
+		'parent_item'       => __( 'Parent Property Category', 'textdomain' ),
+		'parent_item_colon' => __( 'Parent Property Category:', 'textdomain' ),
+		'edit_item'         => __( 'Edit Property Category', 'textdomain' ),
+		'update_item'       => __( 'Update Property Category', 'textdomain' ),
+		'add_new_item'      => __( 'Add New Property Category', 'textdomain' ),
+		'new_item_name'     => __( 'New Property Category Name', 'textdomain' ),
+		'menu_name'         => __( 'Property Category', 'textdomain' ),
+	);
+	$args = array(
+		'labels' => $labels,
+		'description' => __( '', 'textdomain' ),
+		'hierarchical' => true,
+		'public' => true,
+		'publicly_queryable' => true,
+		'show_ui' => true,
+		'show_in_menu' => true,
+		'show_in_nav_menus' => true,
+		'show_tagcloud' => true,
+		'show_in_quick_edit' => true,
+		'show_admin_column' => true,
+		'show_in_rest' => true,
+	);
+	register_taxonomy( 'property-category', array('property'), $args );
+
+}
+add_action( 'init', 'create_propertycategory_tax' );

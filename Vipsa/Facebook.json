@@ -1,0 +1,712 @@
+{
+    "name": "Facebook",
+    "flow": [
+        {
+            "id": 9,
+            "module": "facebook-lead-ads:NewLeadMultiple",
+            "version": 2,
+            "parameters": {
+                "v": "2",
+                "fields": [
+                    "id",
+                    "ad_id",
+                    "ad_name",
+                    "adset_id",
+                    "adset_name",
+                    "campaign_id",
+                    "campaign_name",
+                    "created_time",
+                    "custom_disclaimer_responses",
+                    "field_data",
+                    "form_id",
+                    "home_listing",
+                    "is_organic",
+                    "partner_name",
+                    "platform",
+                    "retailer_item_id",
+                    "vehicle"
+                ],
+                "__IMTHOOK__": 72184
+            },
+            "mapper": {},
+            "metadata": {
+                "designer": {
+                    "x": 0,
+                    "y": 0
+                },
+                "restore": {
+                    "parameters": {
+                        "__IMTHOOK__": {
+                            "data": {
+                                "editable": "false"
+                            },
+                            "label": "Vipsa"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "__IMTHOOK__",
+                        "type": "hook:facebook-lead-ads-new-event",
+                        "label": "Webhook",
+                        "required": true
+                    },
+                    {
+                        "name": "v",
+                        "type": "hidden"
+                    },
+                    {
+                        "name": "fields",
+                        "type": "select",
+                        "label": "Fields",
+                        "multiple": true,
+                        "validate": {
+                            "enum": [
+                                "id",
+                                "ad_id",
+                                "ad_name",
+                                "adset_id",
+                                "adset_name",
+                                "campaign_id",
+                                "campaign_name",
+                                "created_time",
+                                "custom_disclaimer_responses",
+                                "field_data",
+                                "form_id",
+                                "home_listing",
+                                "is_organic",
+                                "partner_name",
+                                "platform",
+                                "retailer_item_id",
+                                "vehicle"
+                            ]
+                        }
+                    }
+                ],
+                "interface": [
+                    {
+                        "name": "leadgenId",
+                        "type": "text",
+                        "label": "Lead ID"
+                    },
+                    {
+                        "name": "formId",
+                        "type": "text",
+                        "label": "Form ID"
+                    },
+                    {
+                        "name": "dateCreated",
+                        "type": "date",
+                        "label": "Date created"
+                    },
+                    {
+                        "name": "adId",
+                        "type": "text",
+                        "label": "Ad ID"
+                    },
+                    {
+                        "name": "pageId",
+                        "type": "text",
+                        "label": "Page ID"
+                    },
+                    {
+                        "name": "adgroupId",
+                        "type": "text",
+                        "label": "Ad group ID"
+                    },
+                    {
+                        "name": "data",
+                        "spec": [
+                            {
+                                "name": "full_name",
+                                "type": "text",
+                                "label": "Full name"
+                            },
+                            {
+                                "name": "phone_number",
+                                "type": "text",
+                                "label": "Phone number"
+                            }
+                        ],
+                        "type": "collection",
+                        "label": "Field data"
+                    },
+                    {
+                        "name": "isOrganic",
+                        "type": "boolean",
+                        "label": "Is organic"
+                    },
+                    {
+                        "name": "adName",
+                        "type": "text",
+                        "label": "Ad name"
+                    },
+                    {
+                        "name": "adsetId",
+                        "type": "text",
+                        "label": "Ad set ID"
+                    },
+                    {
+                        "name": "adsetName",
+                        "type": "text",
+                        "label": "Adset name"
+                    },
+                    {
+                        "name": "campaignId",
+                        "type": "text",
+                        "label": "Campaign ID"
+                    },
+                    {
+                        "name": "campaignName",
+                        "type": "text",
+                        "label": "Campaign name"
+                    },
+                    {
+                        "name": "customDisclaimerResponses",
+                        "type": "collection",
+                        "label": "Custom disclaimer responses"
+                    },
+                    {
+                        "name": "homeListing",
+                        "type": "collection",
+                        "label": "Home listing"
+                    },
+                    {
+                        "name": "partnerName",
+                        "type": "text",
+                        "label": "Partner name"
+                    },
+                    {
+                        "name": "platform",
+                        "type": "text",
+                        "label": "Platform"
+                    },
+                    {
+                        "name": "retailerItemId",
+                        "type": "text",
+                        "label": "Retailer item ID"
+                    },
+                    {
+                        "name": "vehicle",
+                        "type": "collection",
+                        "label": "Vehicle"
+                    }
+                ]
+            }
+        },
+        {
+            "id": 12,
+            "module": "google-sheets:addRow",
+            "version": 2,
+            "parameters": {
+                "__IMTCONN__": 222100
+            },
+            "mapper": {
+                "from": "drive",
+                "mode": "select",
+                "values": {
+                    "0": "{{9.dateCreated}}",
+                    "1": "Facebook",
+                    "2": "Panchvati Shop",
+                    "3": "{{9.data.full_name}}",
+                    "4": "{{9.data.phone_number}}",
+                    "6": "https://wa.me/{{9.data.phone_number}}"
+                },
+                "sheetId": "Vipsa Leads",
+                "spreadsheetId": "/1HhOZTWv5UYll4QAtJk6gPDVXv4mt5127n5AaTdBZbag",
+                "includesHeaders": true,
+                "insertDataOption": "INSERT_ROWS",
+                "valueInputOption": "USER_ENTERED",
+                "insertUnformatted": false
+            },
+            "metadata": {
+                "designer": {
+                    "x": 300,
+                    "y": 0
+                },
+                "restore": {
+                    "expect": {
+                        "from": {
+                            "label": "My Drive"
+                        },
+                        "mode": {
+                            "label": "Select by path"
+                        },
+                        "sheetId": {
+                            "label": "Vipsa Leads"
+                        },
+                        "spreadsheetId": {
+                            "path": [
+                                "The Risign"
+                            ]
+                        },
+                        "includesHeaders": {
+                            "label": "Yes",
+                            "nested": [
+                                {
+                                    "name": "values",
+                                    "spec": [
+                                        {
+                                            "name": "0",
+                                            "type": "text",
+                                            "label": "Date (A)"
+                                        },
+                                        {
+                                            "name": "1",
+                                            "type": "text",
+                                            "label": "Lead Source (B)"
+                                        },
+                                        {
+                                            "name": "2",
+                                            "type": "text",
+                                            "label": "Project (C)"
+                                        },
+                                        {
+                                            "name": "3",
+                                            "type": "text",
+                                            "label": "Name (D)"
+                                        },
+                                        {
+                                            "name": "4",
+                                            "type": "text",
+                                            "label": "Contact (E)"
+                                        },
+                                        {
+                                            "name": "5",
+                                            "type": "text",
+                                            "label": "Massage (F)"
+                                        },
+                                        {
+                                            "name": "6",
+                                            "type": "text",
+                                            "label": "WhatsApp (G)"
+                                        },
+                                        {
+                                            "name": "7",
+                                            "type": "text",
+                                            "label": "Feedback (H)"
+                                        }
+                                    ],
+                                    "type": "collection",
+                                    "label": "Values"
+                                }
+                            ]
+                        },
+                        "insertDataOption": {
+                            "mode": "chose",
+                            "label": "Insert rows"
+                        },
+                        "valueInputOption": {
+                            "mode": "chose",
+                            "label": "User entered"
+                        },
+                        "insertUnformatted": {
+                            "mode": "chose"
+                        }
+                    },
+                    "parameters": {
+                        "__IMTCONN__": {
+                            "data": {
+                                "scoped": "true",
+                                "connection": "google"
+                            },
+                            "label": "Vipsa"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "__IMTCONN__",
+                        "type": "account:google",
+                        "label": "Connection",
+                        "required": true
+                    }
+                ],
+                "expect": [
+                    {
+                        "name": "mode",
+                        "type": "select",
+                        "label": "Choose a Method",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                "select",
+                                "fromAll",
+                                "map"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "insertUnformatted",
+                        "type": "boolean",
+                        "label": "Unformatted",
+                        "required": true
+                    },
+                    {
+                        "name": "valueInputOption",
+                        "type": "select",
+                        "label": "Value input option",
+                        "validate": {
+                            "enum": [
+                                "USER_ENTERED",
+                                "RAW"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "insertDataOption",
+                        "type": "select",
+                        "label": "Insert data option",
+                        "validate": {
+                            "enum": [
+                                "INSERT_ROWS",
+                                "OVERWRITE"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "from",
+                        "type": "select",
+                        "label": "Choose a Drive",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                "drive",
+                                "share",
+                                "team"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "spreadsheetId",
+                        "type": "file",
+                        "label": "Spreadsheet ID",
+                        "required": true
+                    },
+                    {
+                        "name": "sheetId",
+                        "type": "select",
+                        "label": "Sheet Name",
+                        "required": true
+                    },
+                    {
+                        "name": "mode",
+                        "type": "select",
+                        "label": "Choose a Method",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                "select",
+                                "fromAll",
+                                "map"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "insertUnformatted",
+                        "type": "boolean",
+                        "label": "Unformatted",
+                        "required": true
+                    },
+                    {
+                        "name": "valueInputOption",
+                        "type": "select",
+                        "label": "Value input option",
+                        "validate": {
+                            "enum": [
+                                "USER_ENTERED",
+                                "RAW"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "insertDataOption",
+                        "type": "select",
+                        "label": "Insert data option",
+                        "validate": {
+                            "enum": [
+                                "INSERT_ROWS",
+                                "OVERWRITE"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "from",
+                        "type": "select",
+                        "label": "Choose a Drive",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                "drive",
+                                "share",
+                                "team"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "spreadsheetId",
+                        "type": "file",
+                        "label": "Spreadsheet ID",
+                        "required": true
+                    },
+                    {
+                        "name": "sheetId",
+                        "type": "select",
+                        "label": "Sheet Name",
+                        "required": true
+                    },
+                    {
+                        "name": "includesHeaders",
+                        "type": "select",
+                        "label": "Table contains headers",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                true,
+                                false
+                            ]
+                        }
+                    },
+                    {
+                        "name": "values",
+                        "spec": [
+                            {
+                                "name": "0",
+                                "type": "text",
+                                "label": "Date (A)"
+                            },
+                            {
+                                "name": "1",
+                                "type": "text",
+                                "label": "Lead Source (B)"
+                            },
+                            {
+                                "name": "2",
+                                "type": "text",
+                                "label": "Project (C)"
+                            },
+                            {
+                                "name": "3",
+                                "type": "text",
+                                "label": "Name (D)"
+                            },
+                            {
+                                "name": "4",
+                                "type": "text",
+                                "label": "Contact (E)"
+                            },
+                            {
+                                "name": "5",
+                                "type": "text",
+                                "label": "Massage (F)"
+                            },
+                            {
+                                "name": "6",
+                                "type": "text",
+                                "label": "WhatsApp (G)"
+                            },
+                            {
+                                "name": "7",
+                                "type": "text",
+                                "label": "Feedback (H)"
+                            }
+                        ],
+                        "type": "collection",
+                        "label": "Values"
+                    }
+                ]
+            }
+        },
+        {
+            "id": 14,
+            "module": "whatsapp-business-cloud:sendMessage",
+            "version": 1,
+            "parameters": {
+                "__IMTCONN__": 222098
+            },
+            "mapper": {
+                "to": "{{9.data.phone_number}}",
+                "text": {
+                    "body": "नमस्कार, {{9.data.full_name}} जी Vipsa Property में आपका स्वागत् है। 🙏\n\n✅ यह एक JDA Approved दो मंजीला दुकान एवं मकान है जिसमें दो एन्ट्री गेट हैं I\n✅ पहला दुकान का गेट है जो पंचवटी रेल्वे क्रॉसिंग मेन रोड पर स्थित है। \n✅ दूसरा गेट पीछे की ओर शिव परिवार कॉलोनी के पास है। \n✅ उक्त निर्माण नया एवं JDA Approved है।\n\nअधिक जानकारी कॉल करें: 👇\n📞 8400638468\n\nव्हासअप के माध्यम से कुछ जानना चाहते हैं तो कृपया इस लिंक पर क्लीक करें 👇\nhttps://wa.me/918400638468",
+                    "preview_url": false
+                },
+                "type": "text",
+                "fromId": "105642119306350"
+            },
+            "metadata": {
+                "designer": {
+                    "x": 600,
+                    "y": 0
+                },
+                "restore": {
+                    "expect": {
+                        "text": {
+                            "nested": {
+                                "preview_url": {
+                                    "mode": "chose"
+                                }
+                            }
+                        },
+                        "type": {
+                            "label": "Text"
+                        },
+                        "fromId": {
+                            "mode": "chose",
+                            "label": "Vipsa (+91 87268 70121)"
+                        }
+                    },
+                    "parameters": {
+                        "__IMTCONN__": {
+                            "data": {
+                                "scoped": "true",
+                                "connection": "whatsapp-business-cloud2"
+                            },
+                            "label": "Vipsa (Brij Mohan)"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "__IMTCONN__",
+                        "type": "account:whatsapp-business-cloud2",
+                        "label": "Connection",
+                        "required": true
+                    }
+                ],
+                "expect": [
+                    {
+                        "type": "hidden"
+                    },
+                    {
+                        "name": "fromId",
+                        "type": "select",
+                        "label": "Sender ID",
+                        "required": true
+                    },
+                    {
+                        "name": "to",
+                        "type": "text",
+                        "label": "Receiver",
+                        "required": true
+                    },
+                    {
+                        "name": "type",
+                        "type": "select",
+                        "label": "Message Type",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                "text",
+                                "image",
+                                "audio",
+                                "video",
+                                "document",
+                                "sticker",
+                                "location",
+                                "contacts",
+                                "interactive"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "text",
+                        "spec": [
+                            {
+                                "name": "body",
+                                "type": "text",
+                                "label": "Body",
+                                "required": true,
+                                "validate": {
+                                    "max": 4096
+                                }
+                            },
+                            {
+                                "name": "preview_url",
+                                "type": "boolean",
+                                "label": "Preview URL",
+                                "required": true
+                            }
+                        ],
+                        "type": "collection",
+                        "label": "Text"
+                    },
+                    {
+                        "type": "hidden"
+                    },
+                    {
+                        "name": "fromId",
+                        "type": "select",
+                        "label": "Sender ID",
+                        "required": true
+                    },
+                    {
+                        "name": "to",
+                        "type": "text",
+                        "label": "Receiver",
+                        "required": true
+                    },
+                    {
+                        "name": "type",
+                        "type": "select",
+                        "label": "Message Type",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                "text",
+                                "image",
+                                "audio",
+                                "video",
+                                "document",
+                                "sticker",
+                                "location",
+                                "contacts",
+                                "interactive"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "text",
+                        "spec": [
+                            {
+                                "name": "body",
+                                "type": "text",
+                                "label": "Body",
+                                "required": true,
+                                "validate": {
+                                    "max": 4096
+                                }
+                            },
+                            {
+                                "name": "preview_url",
+                                "type": "boolean",
+                                "label": "Preview URL",
+                                "required": true
+                            }
+                        ],
+                        "type": "collection",
+                        "label": "Text"
+                    }
+                ]
+            }
+        }
+    ],
+    "metadata": {
+        "instant": true,
+        "version": 1,
+        "scenario": {
+            "roundtrips": 1,
+            "maxErrors": 3,
+            "autoCommit": true,
+            "autoCommitTriggerLast": true,
+            "sequential": false,
+            "confidential": false,
+            "dataloss": false,
+            "dlq": false,
+            "freshVariables": false
+        },
+        "designer": {
+            "orphans": []
+        },
+        "zone": "eu2.make.com"
+    }
+}

@@ -1,0 +1,764 @@
+<?php
+/**
+ * Astra Child Theme functions and definitions
+ *
+ * @link https://developer.wordpress.org/themes/basics/theme-functions/
+ *
+ * @package Astra-child
+ * @since 1.0.0
+ */
+
+/**
+ * Define Constants
+ */
+define( 'ASTRA_CHILD_THEME_VERSION', '1.0.1' );
+
+/**
+ * Enqueue styles
+ */
+function child_enqueue_styles() {
+
+	wp_enqueue_style( 'astra-child-theme-css', get_stylesheet_directory_uri() . '/style.css', array('astra-theme-css'), ASTRA_CHILD_THEME_VERSION, 'all' );
+
+}
+/**
+ * Avatar
+ */
+
+// 1. Enqueue the needed scripts.
+add_action( "admin_enqueue_scripts", "ayecode_enqueue" );
+function ayecode_enqueue( $hook ){
+	// Load scripts only on the profile page.
+	if( $hook === 'profile.php' || $hook === 'user-edit.php' ){
+		add_thickbox();
+		wp_enqueue_script( 'media-upload' );
+		wp_enqueue_media();
+	}
+}
+
+// 2. Scripts for Media Uploader.
+function ayecode_admin_media_scripts() {
+	?>
+	<script>
+		jQuery(document).ready(function ($) {
+			$(document).on('click', '.avatar-image-upload', function (e) {
+				e.preventDefault();
+				var $button = $(this);
+				var file_frame = wp.media.frames.file_frame = wp.media({
+					title: 'Select or Upload an Custom Avatar',
+					library: {
+						type: 'image' // mime type
+					},
+					button: {
+						text: 'Select Avatar'
+					},
+					multiple: false
+				});
+				file_frame.on('select', function() {
+					var attachment = file_frame.state().get('selection').first().toJSON();
+					$button.siblings('#ayecode-custom-avatar').val( attachment.sizes.thumbnail.url );
+					$button.siblings('.custom-avatar-preview').attr( 'src', attachment.sizes.thumbnail.url );
+				});
+				file_frame.open();
+			});
+		});
+	</script>
+	<?php
+}
+add_action( 'admin_print_footer_scripts-profile.php', 'ayecode_admin_media_scripts' );
+add_action( 'admin_print_footer_scripts-user-edit.php', 'ayecode_admin_media_scripts' );
+
+
+// 3. Adding the Custom Image section for avatar.
+function custom_user_profile_fields( $profileuser ) {
+	?>
+	<h3><?php _e('Custom Local Avatar', 'ayecode'); ?></h3>
+	<table class="form-table ayecode-avatar-upload-options">
+		<tr>
+			<th>
+				<label for="image"><?php _e('Custom Local Avatar', 'ayecode'); ?></label>
+			</th>
+			<td>
+				<?php
+				// Check whether we saved the custom avatar, else return the default avatar.
+				$custom_avatar = get_the_author_meta( 'ayecode-custom-avatar', $profileuser->ID );
+				if ( $custom_avatar == '' ){
+					$custom_avatar = get_avatar_url( $profileuser->ID );
+				}else{
+					$custom_avatar = esc_url_raw( $custom_avatar );
+				}
+				?>
+				<img style="width: 96px; height: 96px; display: block; margin-bottom: 15px;" class="custom-avatar-preview" src="<?php echo $custom_avatar; ?>">
+				<input type="text" name="ayecode-custom-avatar" id="ayecode-custom-avatar" value="<?php echo esc_attr( esc_url_raw( get_the_author_meta( 'ayecode-custom-avatar', $profileuser->ID ) ) ); ?>" class="regular-text" />
+				<input type='button' class="avatar-image-upload button-primary" value="<?php esc_attr_e("Upload Image","ayecode");?>" id="uploadimage"/><br />
+				<span class="description">
+					<?php _e('Please upload a custom avatar for your profile, to remove the avatar simple delete the URL and click update.', 'ayecode'); ?>
+				</span>
+			</td>
+		</tr>
+	</table>
+	<?php
+}
+add_action( 'show_user_profile', 'custom_user_profile_fields', 10, 1 );
+add_action( 'edit_user_profile', 'custom_user_profile_fields', 10, 1 );
+
+
+// 4. Saving the values.
+add_action( 'personal_options_update', 'ayecode_save_local_avatar_fields' );
+add_action( 'edit_user_profile_update', 'ayecode_save_local_avatar_fields' );
+function ayecode_save_local_avatar_fields( $user_id ) {
+	if ( current_user_can( 'edit_user', $user_id ) ) {
+		if( isset($_POST[ 'ayecode-custom-avatar' ]) ){
+			$avatar = esc_url_raw( $_POST[ 'ayecode-custom-avatar' ] );
+			update_user_meta( $user_id, 'ayecode-custom-avatar', $avatar );
+		}
+	}
+}
+
+
+// Set the uploaded image as default gravatar.
+add_filter( 'get_avatar_url', 'ayecode_get_avatar_url', 10, 3 );
+function ayecode_get_avatar_url( $url, $id_or_email, $args ) {
+	$id = '';
+	if ( is_numeric( $id_or_email ) ) {
+		$id = (int) $id_or_email;
+	} elseif ( is_object( $id_or_email ) ) {
+		if ( ! empty( $id_or_email->user_id ) ) {
+			$id = (int) $id_or_email->user_id;
+		}
+	} else {
+		$user = get_user_by( 'email', $id_or_email );
+		$id = !empty( $user ) ?  $user->data->ID : '';
+	}
+	//Preparing for the launch.
+	$custom_url = $id ?  get_user_meta( $id, 'ayecode-custom-avatar', true ) : '';
+	
+	// If there is no custom avatar set, return the normal one.
+	if( $custom_url == '' || !empty($args['force_default'])) {
+		return esc_url_raw( 'https://ayecode.b-cdn.net/wp-content/uploads/sites/12/2020/07/blm-avatar.png' ); 
+	}else{
+		return esc_url_raw($custom_url);
+	}
+}
+
+// Meta Box Class: Other Detail
+class otherdetailMetabox {
+
+	private $screen = array(
+		'post',
+		
+	);
+
+	private $meta_fields = array(
+		array(
+			'label' => 'Price',
+			'id' => 'price',
+			'default' => '₹ 00.00',
+			'type' => 'text',
+		),
+		array(
+			'label' => 'Area',
+			'id' => 'site_area',
+			'default' => '00.00 Sq.ft.',
+			'type' => 'text',
+		),
+		array(
+			'label' => 'BHK',
+			'id' => 'bhk',
+			'type' => 'text',
+		),
+		array(
+			'label' => 'Address',
+			'id' => 'address',
+			'default' => 'Jhansi',
+			'type' => 'text',
+		),
+		array(
+			'label' => 'Land Mark',
+			'id' => 'land_mark',
+			'default' => 'Jhansi',
+			'type' => 'text',
+		),
+		array(
+			'label' => 'Google Map',
+			'id' => 'map',
+			'default' => 'Jhansi',
+			'type' => 'text',
+		),
+		array(
+			'label' => 'Rera No',
+			'id' => 'rera',
+			'type' => 'text',
+		),
+		array(
+			'label' => 'Bank Finance',
+			'id' => 'bank',
+			'default' => 'All Leading Banks',
+			'type' => 'text',
+		),
+		array(
+			'label' => 'Contact',
+			'id' => 'contact',
+			'default' => '9198433007',
+			'type' => 'tel',
+		),
+		array(
+			'label' => 'Availability',
+			'id' => 'availability',
+			'default' => 'For Sale',
+			'type' => 'radio',
+			'options' => array(
+				'For Sale',
+				'For Rent',
+			),
+		),
+		array(
+			'label' => 'Site Logo',
+			'id' => 'logo',
+			'default' => 'https://jhansiproperty.com/wp-content/uploads/2024/08/Jhansi-Property-Logo.webp',
+			'returnvalue' => 'url',
+			'type' => 'media',
+		),
+		array(
+			'label' => 'Reel Image',
+			'id' => 'reel_image',
+			'default' => 'https://jhansiproperty.com/wp-content/uploads/2024/08/Jhansi-Property-Image.webp',
+			'returnvalue' => 'url',
+			'type' => 'media',
+		),
+		array(
+			'label' => 'Post Name',
+			'id' => 'post_slug',
+			'type' => 'text',
+		),
+	);
+
+	public function __construct() {
+		add_action( 'add_meta_boxes', array( $this, 'add_meta_boxes' ) );
+		add_action( 'admin_footer', array( $this, 'media_fields' ) );
+		add_action( 'save_post', array( $this, 'save_fields' ) );
+	}
+
+	public function add_meta_boxes() {
+		foreach ( $this->screen as $single_screen ) {
+			add_meta_box(
+				'otherdetail',
+				__( 'Other Detail', 'textdomain' ),
+				array( $this, 'meta_box_callback' ),
+				$single_screen,
+				'advanced',
+				'default'
+			);
+		}
+	}
+
+	public function meta_box_callback( $post ) {
+		wp_nonce_field( 'otherdetail_data', 'otherdetail_nonce' );
+		$this->field_generator( $post );
+	}
+	public function media_fields() {
+		?><script>
+			jQuery(document).ready(function($){
+				if ( typeof wp.media !== 'undefined' ) {
+					var _custom_media = true,
+					_orig_send_attachment = wp.media.editor.send.attachment;
+					$('.otherdetail-media').click(function(e) {
+						var send_attachment_bkp = wp.media.editor.send.attachment;
+						var button = $(this);
+						var id = button.attr('id').replace('_button', '');
+						_custom_media = true;
+							wp.media.editor.send.attachment = function(props, attachment){
+							if ( _custom_media ) {
+								if ($('input#' + id).data('return') == 'url') {
+									$('input#' + id).val(attachment.url);
+								} else {
+									$('input#' + id).val(attachment.id);
+								}
+								$('div#preview'+id).css('background-image', 'url('+attachment.url+')');
+							} else {
+								return _orig_send_attachment.apply( this, [props, attachment] );
+							};
+						}
+						wp.media.editor.open(button);
+						return false;
+					});
+					$('.add_media').on('click', function(){
+						_custom_media = false;
+					});
+					$('.remove-media').on('click', function(){
+						var parent = $(this).parents('td');
+						parent.find('input[type="text"]').val('');
+						parent.find('div').css('background-image', 'url()');
+					});
+				}
+			});
+		</script><?php
+	}
+
+	public function field_generator( $post ) {
+		$output = '';
+		foreach ( $this->meta_fields as $meta_field ) {
+			$label = '<label for="' . $meta_field['id'] . '">' . $meta_field['label'] . '</label>';
+			$meta_value = get_post_meta( $post->ID, $meta_field['id'], true );
+			if ( empty( $meta_value ) ) {
+				if ( isset( $meta_field['default'] ) ) {
+					$meta_value = $meta_field['default'];
+				}
+			}
+			switch ( $meta_field['type'] ) {
+				case 'media':
+					$meta_url = '';
+						if ($meta_value) {
+							if ($meta_field['returnvalue'] == 'url') {
+								$meta_url = $meta_value;
+							} else {
+								$meta_url = wp_get_attachment_url($meta_value);
+							}
+						}
+					$input = sprintf(
+						'<input style="display:none;" id="%s" name="%s" type="text" value="%s"  data-return="%s"><div id="preview%s" style="margin-right:10px;border:1px solid #e2e4e7;background-color:#fafafa;display:inline-block;width: 100px;height:100px;background-image:url(%s);background-size:cover;background-repeat:no-repeat;background-position:center;"></div><input style="width: 19%%;margin-right:5px;" class="button otherdetail-media" id="%s_button" name="%s_button" type="button" value="Select" /><input style="width: 19%%;" class="button remove-media" id="%s_buttonremove" name="%s_buttonremove" type="button" value="Clear" />',
+						$meta_field['id'],
+						$meta_field['id'],
+						$meta_value,
+						$meta_field['returnvalue'],
+						$meta_field['id'],
+						$meta_url,
+						$meta_field['id'],
+						$meta_field['id'],
+						$meta_field['id'],
+						$meta_field['id']
+					);
+					break;
+				case 'radio':
+					$input = '<fieldset>';
+					$input .= '<legend class="screen-reader-text">' . $meta_field['label'] . '</legend>';
+					$i = 0;
+					foreach ( $meta_field['options'] as $key => $value ) {
+						$meta_field_value = !is_numeric( $key ) ? $key : $value;
+						$input .= sprintf(
+							'<label><input %s id=" %s" name="%s" type="radio" value="%s"> %s</label>%s',
+							$meta_value === $meta_field_value ? 'checked' : '',
+							$meta_field['id'],
+							$meta_field['id'],
+							$meta_field_value,
+							$value,
+							$i < count( $meta_field['options'] ) - 1 ? '<br>' : ''
+						);
+						$i++;
+					}
+					$input .= '</fieldset>';
+					break;
+				default:
+					$input = sprintf(
+						'<input %s id="%s" name="%s" type="%s" value="%s">',
+						$meta_field['type'] !== 'color' ? 'style="width: 100%"' : '',
+						$meta_field['id'],
+						$meta_field['id'],
+						$meta_field['type'],
+						$meta_value
+					);
+			}
+			$output .= $this->format_rows( $label, $input );
+		}
+		echo '<table class="form-table"><tbody>' . $output . '</tbody></table>';
+	}
+
+	public function format_rows( $label, $input ) {
+		return '<tr><th>'.$label.'</th><td>'.$input.'</td></tr>';
+	}
+
+	public function save_fields( $post_id ) {
+		if ( ! isset( $_POST['otherdetail_nonce'] ) )
+			return $post_id;
+		$nonce = $_POST['otherdetail_nonce'];
+		if ( !wp_verify_nonce( $nonce, 'otherdetail_data' ) )
+			return $post_id;
+		if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE )
+			return $post_id;
+		foreach ( $this->meta_fields as $meta_field ) {
+			if ( isset( $_POST[ $meta_field['id'] ] ) ) {
+				switch ( $meta_field['type'] ) {
+					case 'email':
+						$_POST[ $meta_field['id'] ] = sanitize_email( $_POST[ $meta_field['id'] ] );
+						break;
+					case 'text':
+						$_POST[ $meta_field['id'] ] = sanitize_text_field( $_POST[ $meta_field['id'] ] );
+						break;
+				}
+				update_post_meta( $post_id, $meta_field['id'], $_POST[ $meta_field['id'] ] );
+			} else if ( $meta_field['type'] === 'checkbox' ) {
+				update_post_meta( $post_id, $meta_field['id'], '0' );
+			}
+		}
+	}
+}
+
+if (class_exists('otherdetailMetabox')) {
+	new otherdetailMetabox;
+};
+
+// Reel image
+function reelimage() {
+global $post;
+$postId=$post->ID;
+echo "<img src='".get_post_meta($postId, "reel_image", true)."'>"; 
+}
+add_shortcode ("reel-ima", "reelimage");
+
+function sitelogo() {
+global $post;
+$postId=$post->ID;
+echo "<img src='".get_post_meta($postId, "logo", true). "'>"; 
+}
+add_shortcode ("site-logo", "sitelogo");
+
+//Category Meta
+class categoryMetabox {
+	private $meta_fields = array(
+		array(
+			'label' => 'Image',
+			'id' => 'image_cat',
+			'type' => 'media',
+		),
+		array(
+			'label' => 'Color',
+			'id' => 'color_cat',
+			'type' => 'color',
+		),
+	);
+	public function __construct() {
+		if ( is_admin() ) {
+			add_action( 'category_add_form_fields', array( $this, 'create_fields' ), 10, 2 );
+			add_action( 'category_edit_form_fields', array( $this, 'edit_fields' ),  10, 2 );
+			add_action( 'created_category', array( $this, 'save_fields' ), 10, 1 );
+			add_action( 'edited_category',  array( $this, 'save_fields' ), 10, 1 );
+			add_action( 'admin_footer', array( $this, 'media_fields' ) );
+			add_action( 'admin_enqueue_scripts', 'wp_enqueue_media' );
+		}
+	}
+	public function media_fields() {
+		?><script>
+			jQuery(document).ready(function($){
+				if ( typeof wp.media !== 'undefined' ) {
+					var _custom_media = true,
+					_orig_send_attachment = wp.media.editor.send.attachment;
+					$('.category-media').click(function(e) {
+						var send_attachment_bkp = wp.media.editor.send.attachment;
+						var button = $(this);
+						var id = button.attr('id').replace('_button', '');
+						_custom_media = true;
+							wp.media.editor.send.attachment = function(props, attachment){
+							if ( _custom_media ) {
+								$('input#'+id).val(attachment.id);
+								$('div#preview'+id).css('background-image', 'url('+attachment.url+')');
+							} else {
+								return _orig_send_attachment.apply( this, [props, attachment] );
+							};
+						}
+						wp.media.editor.open(button);
+						return false;
+					});
+					$('.add_media').on('click', function(){
+						_custom_media = false;
+					});
+					$('.remove-media').on('click', function(){
+						var parent = $(this).parents('td');
+						parent.find('input[type="text"]').val('');
+						parent.find('div').css('background-image', 'url()');
+					});
+				}
+			});
+		</script><?php
+	}
+	public function create_fields( $taxonomy ) {
+		$output = '';
+		foreach ( $this->meta_fields as $meta_field ) {
+			$label = '<label for="' . $meta_field['id'] . '">' . $meta_field['label'] . '</label>';
+			if ( empty( $meta_value ) ) {
+				if ( isset( $meta_field['default'] ) ) {
+					$meta_value = $meta_field['default'];
+				}
+			}
+			switch ( $meta_field['type'] ) {
+				case 'media':
+					$meta_url = '';
+						if ($meta_value) {
+							$meta_url = wp_get_attachment_url($meta_value);
+						}
+					$input = sprintf(
+						'<input style="display:none;" id="%s" name="%s" type="text" value="%s"><div id="preview%s" style="margin-right:10px;border:2px solid #eee;display:inline-block;width: 100px;height:100px;background-image:url(%s);background-size:contain;background-repeat:no-repeat;"></div><input style="width: 19%%;margin-right:5px;" class="button category-media" id="%s_button" name="%s_button" type="button" value="Select" /><input style="width: 19%%;" class="button remove-media" id="%s_buttonremove" name="%s_buttonremove" type="button" value="Clear" />',
+						$meta_field['id'],
+						$meta_field['id'],
+						$meta_value,
+						$meta_field['id'],
+						$meta_url,
+						$meta_field['id'],
+						$meta_field['id'],
+						$meta_field['id'],
+						$meta_field['id']
+					);
+					break;
+				default:
+					$input = sprintf(
+						'<input %s id="%s" name="%s" type="%s" value="%s">',
+						$meta_field['type'] !== 'color' ? '' : '',
+						$meta_field['id'],
+						$meta_field['id'],
+						$meta_field['type'],
+						$meta_value
+					);
+			}
+			$output .= '<div class="form-field">'.$this->format_rows( $label, $input ).'</div>';
+		}
+		echo $output;
+	}
+	public function edit_fields( $term, $taxonomy ) {
+		$output = '';
+		foreach ( $this->meta_fields as $meta_field ) {
+			$label = '<label for="' . $meta_field['id'] . '">' . $meta_field['label'] . '</label>';
+			$meta_value = get_term_meta( $term->term_id, $meta_field['id'], true );
+			switch ( $meta_field['type'] ) {
+				case 'media':
+					$meta_url = '';
+						if ($meta_value) {
+							$meta_url = wp_get_attachment_url($meta_value);
+						}
+					$input = sprintf(
+						'<input style="display:none;" id="%s" name="%s" type="text" value="%s"><div id="preview%s" style="margin-right:10px;border:2px solid #eee;display:inline-block;width: 100px;height:100px;background-image:url(%s);background-size:contain;background-repeat:no-repeat;"></div><input style="width: 19%%;margin-right:5px;" class="button category-media" id="%s_button" name="%s_button" type="button" value="Select" /><input style="width: 19%%;" class="button remove-media" id="%s_buttonremove" name="%s_buttonremove" type="button" value="Clear" />',
+						$meta_field['id'],
+						$meta_field['id'],
+						$meta_value,
+						$meta_field['id'],
+						$meta_url,
+						$meta_field['id'],
+						$meta_field['id'],
+						$meta_field['id'],
+						$meta_field['id']
+					);
+					break;
+				default:
+					$input = sprintf(
+						'<input %s id="%s" name="%s" type="%s" value="%s">',
+						$meta_field['type'] !== 'color' ? '' : '',
+						$meta_field['id'],
+						$meta_field['id'],
+						$meta_field['type'],
+						$meta_value
+					);
+			}
+			$output .= $this->format_rows( $label, $input );
+		}
+		echo '<div class="form-field">' . $output . '</div>';
+	}
+	public function format_rows( $label, $input ) {
+		return '<tr class="form-field"><th>'.$label.'</th><td>'.$input.'</td></tr>';
+	}
+	public function save_fields( $term_id ) {
+		foreach ( $this->meta_fields as $meta_field ) {
+			if ( isset( $_POST[ $meta_field['id'] ] ) ) {
+				switch ( $meta_field['type'] ) {
+					case 'email':
+						$_POST[ $meta_field['id'] ] = sanitize_email( $_POST[ $meta_field['id'] ] );
+						break;
+					case 'text':
+						$_POST[ $meta_field['id'] ] = sanitize_text_field( $_POST[ $meta_field['id'] ] );
+						break;
+				}
+				update_term_meta( $term_id, $meta_field['id'], $_POST[ $meta_field['id']] );
+			} else if ( $meta_field['type'] === 'checkbox' ) {
+				update_term_meta( $term_id, $meta_field['id'], '0' );
+			}
+		}
+	}
+}
+if (class_exists('categoryMetabox')) {
+	new categoryMetabox;
+};
+
+// Register Custom Post Type News & Event
+function create_newsevent_cpt() {
+
+	$labels = array(
+		'name' => _x( 'News & Events', 'Post Type General Name', 'textdomain' ),
+		'singular_name' => _x( 'News & Event', 'Post Type Singular Name', 'textdomain' ),
+		'menu_name' => _x( 'News & Events', 'Admin Menu text', 'textdomain' ),
+		'name_admin_bar' => _x( 'News & Event', 'Add New on Toolbar', 'textdomain' ),
+		'archives' => __( 'News & Event Archives', 'textdomain' ),
+		'attributes' => __( 'News & Event Attributes', 'textdomain' ),
+		'parent_item_colon' => __( 'Parent News & Event:', 'textdomain' ),
+		'all_items' => __( 'All News & Events', 'textdomain' ),
+		'add_new_item' => __( 'Add New News & Event', 'textdomain' ),
+		'add_new' => __( 'Add New', 'textdomain' ),
+		'new_item' => __( 'New News & Event', 'textdomain' ),
+		'edit_item' => __( 'Edit News & Event', 'textdomain' ),
+		'update_item' => __( 'Update News & Event', 'textdomain' ),
+		'view_item' => __( 'View News & Event', 'textdomain' ),
+		'view_items' => __( 'View News & Events', 'textdomain' ),
+		'search_items' => __( 'Search News & Event', 'textdomain' ),
+		'not_found' => __( 'Not found', 'textdomain' ),
+		'not_found_in_trash' => __( 'Not found in Trash', 'textdomain' ),
+		'featured_image' => __( 'Featured Image', 'textdomain' ),
+		'set_featured_image' => __( 'Set featured image', 'textdomain' ),
+		'remove_featured_image' => __( 'Remove featured image', 'textdomain' ),
+		'use_featured_image' => __( 'Use as featured image', 'textdomain' ),
+		'insert_into_item' => __( 'Insert into News & Event', 'textdomain' ),
+		'uploaded_to_this_item' => __( 'Uploaded to this News & Event', 'textdomain' ),
+		'items_list' => __( 'News & Events list', 'textdomain' ),
+		'items_list_navigation' => __( 'News & Events list navigation', 'textdomain' ),
+		'filter_items_list' => __( 'Filter News & Events list', 'textdomain' ),
+	);
+	$args = array(
+		'label' => __( 'News & Event', 'textdomain' ),
+		'description' => __( '', 'textdomain' ),
+		'labels' => $labels,
+		'menu_icon' => 'dashicons-admin-post',
+		'supports' => array('title', 'editor', 'thumbnail', 'author'),
+		'taxonomies' => array('category-news'),
+		'public' => true,
+		'show_ui' => true,
+		'show_in_menu' => true,
+		'menu_position' => 5,
+		'show_in_admin_bar' => true,
+		'show_in_nav_menus' => true,
+		'can_export' => true,
+		'has_archive' => true,
+		'hierarchical' => true,
+		'exclude_from_search' => false,
+		'show_in_rest' => true,
+		'publicly_queryable' => true,
+		'capability_type' => 'post',
+	);
+	register_post_type( 'newsevent', $args );
+
+}
+add_action( 'init', 'create_newsevent_cpt', 0 );
+
+// Register Taxonomy Category News
+function create_categorynews_tax() {
+
+	$labels = array(
+		'name'              => _x( 'Categories News', 'taxonomy general name', 'textdomain' ),
+		'singular_name'     => _x( 'Category News', 'taxonomy singular name', 'textdomain' ),
+		'search_items'      => __( 'Search Categories News', 'textdomain' ),
+		'all_items'         => __( 'All Categories News', 'textdomain' ),
+		'parent_item'       => __( 'Parent Category News', 'textdomain' ),
+		'parent_item_colon' => __( 'Parent Category News:', 'textdomain' ),
+		'edit_item'         => __( 'Edit Category News', 'textdomain' ),
+		'update_item'       => __( 'Update Category News', 'textdomain' ),
+		'add_new_item'      => __( 'Add New Category News', 'textdomain' ),
+		'new_item_name'     => __( 'New Category News Name', 'textdomain' ),
+		'menu_name'         => __( 'Category News', 'textdomain' ),
+	);
+	$args = array(
+		'labels' => $labels,
+		'description' => __( '', 'textdomain' ),
+		'hierarchical' => true,
+		'public' => true,
+		'publicly_queryable' => true,
+		'show_ui' => true,
+		'show_in_menu' => true,
+		'show_in_nav_menus' => true,
+		'show_tagcloud' => true,
+		'show_in_quick_edit' => true,
+		'show_admin_column' => true,
+		'show_in_rest' => true,
+	);
+	register_taxonomy( 'category-news', array('newsevent'), $args );
+
+}
+
+
+
+
+// Extend WordPress login session duration to 1 year (in seconds)
+function extend_login_session_duration( $expiration ) {
+    return 31556926; // 1 year in seconds
+}
+add_filter( 'auth_cookie_expiration', 'extend_login_session_duration' );
+
+
+function remove_dashboard_menu_items() {
+    global $menu;
+    $user = wp_get_current_user();
+    $user_role = $user->roles[0]; // Get the first user role assigned to the user
+ 
+    if ($user_role == 'administrator') {
+        // Admin can see all menu items
+        return;
+    } elseif ($user_role == 'author') {
+        // Author can see Pages and Posts
+        unset($menu[10]);   // Removes "Media"
+        unset($menu[20]);   // Removes "Pages"
+        unset($menu[25]);   // Removes "Comments"
+        unset($menu[55]);   // Removes "Templates"
+        unset($menu[60]);   // Removes "Appearance"
+        unset($menu[65]);   // Removes "Plugins"
+        unset($menu[70]);   // Removes "Users"
+        unset($menu[75]);   // Removes "Tools"
+        unset($menu[80]);   // Removes "Settings"
+        remove_menu_page('index.php'); // Removes the Dashboard home page
+    } else {
+        // All other users see limited menu items
+        unset($menu[5]);    // Removes "Posts"
+        unset($menu[10]);   // Removes "Media"
+        unset($menu[20]);   // Removes "Pages"
+        unset($menu[25]);   // Removes "Comments"
+        unset($menu[60]);   // Removes "Appearance"
+        unset($menu[65]);   // Removes "Plugins"
+        unset($menu[70]);   // Removes "Users"
+        unset($menu[75]);   // Removes "Tools"
+        unset($menu[80]);   // Removes "Settings"
+        remove_menu_page('index.php'); // Removes the Dashboard home page
+    }
+}
+add_action('admin_menu', 'remove_dashboard_menu_items');
+
+function convert_image_to_webp($metadata, $attachment_id) {
+    $upload_dir = wp_upload_dir();
+    $upload_path = $upload_dir['path'];
+
+    $attachment = get_post($attachment_id);
+    $file = get_attached_file($attachment_id);
+    $file_info = pathinfo($file);
+    $file_extension = $file_info['extension'];
+    $new_file = $upload_path . '/' . $file_info['filename'] . '.webp';
+
+    // Only process if the file is not already a WebP
+    if ($file_extension !== 'webp') {
+        $image = null;
+
+        // Load the image
+        switch ($file_extension) {
+            case 'jpg':
+            case 'jpeg':
+                $image = imagecreatefromjpeg($file);
+                break;
+            case 'png':
+                $image = imagecreatefrompng($file);
+                break;
+            case 'gif':
+                $image = imagecreatefromgif($file);
+                break;
+            default:
+                return $metadata; // Skip unsupported formats
+        }
+
+        if ($image) {
+            // Save the image as WebP
+            imagewebp($image, $new_file, 90); // 80 is the quality, you can adjust this
+            imagedestroy($image);
+
+            // Update metadata
+            $metadata['file'] = str_replace($file_info['basename'], basename($new_file), $metadata['file']);
+            $metadata['sizes'] = array_map(function($size) use ($new_file) {
+                return str_replace(basename($size['file']), basename($new_file), $size);
+            }, $metadata['sizes']);
+
+            // Remove the old file
+            @unlink($file);
+        }
+    }
+
+    return $metadata;
+}
+add_filter('wp_generate_attachment_metadata', 'convert_image_to_webp', 10, 2);

@@ -1,0 +1,1043 @@
+<?php
+/**
+ * Astra Child Theme functions and definitions
+ *
+ * @link https://developer.wordpress.org/themes/basics/theme-functions/
+ *
+ * @package Astra-child
+ * @since 1.0.0
+ */
+
+/**
+ * Define Constants
+ */
+define( 'ASTRA_CHILD_THEME_VERSION', '1.0.1' );
+
+/**
+ * Enqueue styles
+ */
+function child_enqueue_styles() {
+
+	wp_enqueue_style( 'astra-child-theme-css', get_stylesheet_directory_uri() . '/style.css', array('astra-theme-css'), ASTRA_CHILD_THEME_VERSION, 'all' );
+
+}
+
+add_action( 'wp_enqueue_scripts', 'child_enqueue_styles', 15 );
+
+// Register Custom Post Type Property
+function create_property_cpt() {
+
+	$labels = array(
+		'name' => _x( 'Properties', 'Post Type General Name', 'textdomain' ),
+		'singular_name' => _x( 'Property', 'Post Type Singular Name', 'textdomain' ),
+		'menu_name' => _x( 'Properties', 'Admin Menu text', 'textdomain' ),
+		'name_admin_bar' => _x( 'Property', 'Add New on Toolbar', 'textdomain' ),
+		'archives' => __( 'Property Archives', 'textdomain' ),
+		'attributes' => __( 'Property Attributes', 'textdomain' ),
+		'parent_item_colon' => __( 'Parent Property:', 'textdomain' ),
+		'all_items' => __( 'All Properties', 'textdomain' ),
+		'add_new_item' => __( 'Add New Property', 'textdomain' ),
+		'add_new' => __( 'Add New', 'textdomain' ),
+		'new_item' => __( 'New Property', 'textdomain' ),
+		'edit_item' => __( 'Edit Property', 'textdomain' ),
+		'update_item' => __( 'Update Property', 'textdomain' ),
+		'view_item' => __( 'View Property', 'textdomain' ),
+		'view_items' => __( 'View Properties', 'textdomain' ),
+		'search_items' => __( 'Search Property', 'textdomain' ),
+		'not_found' => __( 'Not found', 'textdomain' ),
+		'not_found_in_trash' => __( 'Not found in Trash', 'textdomain' ),
+		'featured_image' => __( 'Featured Image', 'textdomain' ),
+		'set_featured_image' => __( 'Set featured image', 'textdomain' ),
+		'remove_featured_image' => __( 'Remove featured image', 'textdomain' ),
+		'use_featured_image' => __( 'Use as featured image', 'textdomain' ),
+		'insert_into_item' => __( 'Insert into Property', 'textdomain' ),
+		'uploaded_to_this_item' => __( 'Uploaded to this Property', 'textdomain' ),
+		'items_list' => __( 'Properties list', 'textdomain' ),
+		'items_list_navigation' => __( 'Properties list navigation', 'textdomain' ),
+		'filter_items_list' => __( 'Filter Properties list', 'textdomain' ),
+	);
+	$args = array(
+		'label' => __( 'Property', 'textdomain' ),
+		'description' => __( '', 'textdomain' ),
+		'labels' => $labels,
+		'menu_icon' => 'dashicons-awards',
+		'supports' => array('title', 'editor', 'thumbnail', 'author'),
+		'taxonomies' => array(),
+		'public' => true,
+		'show_ui' => true,
+		'show_in_menu' => true,
+		'menu_position' => 20,
+		'show_in_admin_bar' => true,
+		'show_in_nav_menus' => true,
+		'can_export' => true,
+		'has_archive' => true,
+		'hierarchical' => true,
+		'exclude_from_search' => false,
+		'show_in_rest' => true,
+		'publicly_queryable' => true,
+		'capability_type' => 'post',
+	);
+	register_post_type( 'property', $args );
+
+}
+add_action( 'init', 'create_property_cpt', 0 );
+
+// Register Taxonomy Property Category
+function create_propertycategory_tax() {
+
+	$labels = array(
+		'name'              => _x( 'Categories', 'taxonomy general name', 'textdomain' ),
+		'singular_name'     => _x( 'Category', 'taxonomy singular name', 'textdomain' ),
+		'search_items'      => __( 'Search Categories', 'textdomain' ),
+		'all_items'         => __( 'All Categories', 'textdomain' ),
+		'parent_item'       => __( 'Parent Category', 'textdomain' ),
+		'parent_item_colon' => __( 'Parent Category:', 'textdomain' ),
+		'edit_item'         => __( 'Edit Category', 'textdomain' ),
+		'update_item'       => __( 'Update Category', 'textdomain' ),
+		'add_new_item'      => __( 'Add New Category', 'textdomain' ),
+		'new_item_name'     => __( 'New Category Name', 'textdomain' ),
+		'menu_name'         => __( 'Category', 'textdomain' ),
+	);
+	$args = array(
+		'labels' => $labels,
+		'description' => __( '', 'textdomain' ),
+		'hierarchical' => true,
+		'public' => true,
+		'publicly_queryable' => true,
+		'show_ui' => true,
+		'show_in_menu' => true,
+		'show_in_nav_menus' => true,
+		'show_tagcloud' => true,
+		'show_in_quick_edit' => true,
+		'show_admin_column' => true,
+		'show_in_rest' => true,
+	);
+	register_taxonomy( 'property-category', array('property'), $args );
+
+}
+add_action( 'init', 'create_propertycategory_tax' );
+
+// Register Custom Post Type Plot
+function create_plot_cpt() {
+
+	$labels = array(
+		'name' => _x( 'Plots', 'Post Type General Name', 'textdomain' ),
+		'singular_name' => _x( 'Plot', 'Post Type Singular Name', 'textdomain' ),
+		'menu_name' => _x( 'Plots', 'Admin Menu text', 'textdomain' ),
+		'name_admin_bar' => _x( 'Plot', 'Add New on Toolbar', 'textdomain' ),
+		'archives' => __( 'Plot Archives', 'textdomain' ),
+		'attributes' => __( 'Plot Attributes', 'textdomain' ),
+		'parent_item_colon' => __( 'Parent Plot:', 'textdomain' ),
+		'all_items' => __( 'All Plots', 'textdomain' ),
+		'add_new_item' => __( 'Add New Plot', 'textdomain' ),
+		'add_new' => __( 'Add New', 'textdomain' ),
+		'new_item' => __( 'New Plot', 'textdomain' ),
+		'edit_item' => __( 'Edit Plot', 'textdomain' ),
+		'update_item' => __( 'Update Plot', 'textdomain' ),
+		'view_item' => __( 'View Plot', 'textdomain' ),
+		'view_items' => __( 'View Plots', 'textdomain' ),
+		'search_items' => __( 'Search Plot', 'textdomain' ),
+		'not_found' => __( 'Not found', 'textdomain' ),
+		'not_found_in_trash' => __( 'Not found in Trash', 'textdomain' ),
+		'featured_image' => __( 'Featured Image', 'textdomain' ),
+		'set_featured_image' => __( 'Set featured image', 'textdomain' ),
+		'remove_featured_image' => __( 'Remove featured image', 'textdomain' ),
+		'use_featured_image' => __( 'Use as featured image', 'textdomain' ),
+		'insert_into_item' => __( 'Insert into Plot', 'textdomain' ),
+		'uploaded_to_this_item' => __( 'Uploaded to this Plot', 'textdomain' ),
+		'items_list' => __( 'Plots list', 'textdomain' ),
+		'items_list_navigation' => __( 'Plots list navigation', 'textdomain' ),
+		'filter_items_list' => __( 'Filter Plots list', 'textdomain' ),
+	);
+	$args = array(
+		'label' => __( 'Plot', 'textdomain' ),
+		'description' => __( '', 'textdomain' ),
+		'labels' => $labels,
+		'menu_icon' => 'dashicons-admin-multisite',
+		'supports' => array('title', 'editor', 'thumbnail', 'author'),
+		'taxonomies' => array('plot-category'),
+		'public' => true,
+		'show_ui' => true,
+		'show_in_menu' => true,
+		'menu_position' => 20,
+		'show_in_admin_bar' => true,
+		'show_in_nav_menus' => true,
+		'can_export' => true,
+		'has_archive' => true,
+		'hierarchical' => true,
+		'exclude_from_search' => false,
+		'show_in_rest' => true,
+		'publicly_queryable' => true,
+		'capability_type' => 'post',
+	);
+	register_post_type( 'plot', $args );
+
+}
+add_action( 'init', 'create_plot_cpt', 0 );
+
+// Register Taxonomy Category
+function create_category_tax() {
+
+	$labels = array(
+		'name'              => _x( 'Categories', 'taxonomy general name', 'textdomain' ),
+		'singular_name'     => _x( 'Category', 'taxonomy singular name', 'textdomain' ),
+		'search_items'      => __( 'Search Categories', 'textdomain' ),
+		'all_items'         => __( 'All Categories', 'textdomain' ),
+		'parent_item'       => __( 'Parent Category', 'textdomain' ),
+		'parent_item_colon' => __( 'Parent Category:', 'textdomain' ),
+		'edit_item'         => __( 'Edit Category', 'textdomain' ),
+		'update_item'       => __( 'Update Category', 'textdomain' ),
+		'add_new_item'      => __( 'Add New Category', 'textdomain' ),
+		'new_item_name'     => __( 'New Category Name', 'textdomain' ),
+		'menu_name'         => __( 'Category', 'textdomain' ),
+	);
+	$args = array(
+		'labels' => $labels,
+		'description' => __( '', 'textdomain' ),
+		'hierarchical' => true,
+		'public' => true,
+		'publicly_queryable' => true,
+		'show_ui' => true,
+		'show_in_menu' => true,
+		'show_in_nav_menus' => true,
+		'show_tagcloud' => true,
+		'show_in_quick_edit' => true,
+		'show_admin_column' => false,
+		'show_in_rest' => true,
+	);
+	register_taxonomy( 'plot-category', array('plot'), $args );
+
+}
+add_action( 'init', 'create_category_tax' );
+
+
+// Meta Box Class: Other Detail
+class otherdetailMetabox {
+
+	private $screen = array(
+		'plot',
+		
+	);
+
+	private $meta_fields = array(
+		array(
+			'label' => 'Location',
+			'id' => 'location',
+			'default' => 'City',
+			'type' => 'text',
+		),
+		array(
+			'label' => 'Price',
+			'id' => 'price',
+			'default' => '₹ 00.00',
+			'type' => 'text',
+		),
+		array(
+			'label' => 'Plot Area/Size',
+			'id' => 'area',
+			'default' => '00.00 Sq.ft.',
+			'type' => 'text',
+		),
+		array(
+			'label' => 'Land Type',
+			'id' => 'type',
+			'default' => 'Residential',
+			'type' => 'radio',
+			'options' => array(
+				'Residential',
+				'Agricultural',
+				'Commercial',
+				'Industrial',
+				'Hill',
+			),
+		),
+		array(
+			'label' => 'Ownership Type',
+			'id' => 'ownership',
+			'default' => 'Freehold',
+			'type' => 'radio',
+			'options' => array(
+				'Freehold',
+				'Leasehold',
+			),
+		),
+		array(
+			'label' => 'Zoning',
+			'id' => 'zoning',
+			'default' => 'Residential',
+			'type' => 'radio',
+			'options' => array(
+				'Residential',
+				'Commercial',
+				'Mixed-use',
+				'etc.',
+			),
+		),
+		array(
+			'label' => 'Topography',
+			'id' => 'topography',
+			'default' => 'Flat',
+			'type' => 'radio',
+			'options' => array(
+				'Flat',
+				'Hilly',
+				'Sloped',
+				'Land elevation',
+				'etc.',
+			),
+		),
+		array(
+			'label' => 'Road Frontage',
+			'id' => 'road-frontage',
+			'type' => 'text',
+		),
+		array(
+			'label' => 'Road Access',
+			'id' => 'road-access',
+			'default' => 'Highway',
+			'type' => 'radio',
+			'options' => array(
+				'Highway',
+				'Paved',
+				'Unpaved',
+				'etc.',
+			),
+		),
+		array(
+			'label' => 'Road Frontage',
+			'id' => 'road-frontage',
+			'type' => 'text',
+		),
+		array(
+			'label' => 'Water Supply',
+			'id' => 'water-supply',
+			'default' => 'Municipal',
+			'type' => 'radio',
+			'options' => array(
+				'Municipal',
+				'Borewell',
+				'None',
+			),
+		),
+		array(
+			'label' => 'Electricity Availability',
+			'id' => 'electricity',
+			'default' => 'Yes',
+			'type' => 'radio',
+			'options' => array(
+				'Yes',
+				'No',
+			),
+		),
+		array(
+			'label' => 'Sewage/Drainage System',
+			'id' => 'sewage',
+			'default' => 'Yes',
+			'type' => 'radio',
+			'options' => array(
+				'Yes',
+				'No',
+			),
+		),
+		array(
+			'label' => 'Nearby Landmarks',
+			'id' => 'landmarks',
+			'type' => 'text',
+		),
+		array(
+			'label' => 'Land Use Status',
+			'id' => 'land-use',
+			'default' => 'Residential',
+			'type' => 'radio',
+			'options' => array(
+				'Residential',
+				'Commercial',
+				'Agricultural',
+				'etc.',
+				'',
+			),
+		),
+		array(
+			'label' => 'Boundary Wall',
+			'id' => 'boundary-wall',
+			'default' => 'Yes',
+			'type' => 'radio',
+			'options' => array(
+				'Yes',
+				'No',
+			),
+		),
+		array(
+			'label' => 'Landmark Proximity',
+			'id' => 'landmark-proximity',
+			'type' => 'text',
+		),
+		array(
+			'label' => 'Legal Status',
+			'id' => 'legal-status',
+			'type' => 'text',
+		),
+		array(
+			'label' => 'Soil Quality',
+			'id' => 'soil-quality',
+			'type' => 'text',
+		),
+		array(
+			'label' => 'Nearby Development',
+			'id' => 'nearby-development',
+			'type' => 'text',
+		),
+		array(
+			'label' => 'Fencing',
+			'id' => 'fencing',
+			'default' => 'Yes',
+			'type' => 'radio',
+			'options' => array(
+				'Yes',
+				'No',
+			),
+		),
+		array(
+			'label' => 'Connectivity',
+			'id' => 'connectivity',
+			'type' => 'text',
+		),
+		array(
+			'label' => 'Nearby Utilities',
+			'id' => 'nearby-utilities',
+			'type' => 'text',
+		),
+		array(
+			'label' => 'Loan Facility Available',
+			'id' => 'loan-facility',
+			'default' => 'Yes',
+			'type' => 'radio',
+			'options' => array(
+				'Yes',
+				'No',
+			),
+		),
+		array(
+			'label' => 'Contact Details',
+			'id' => 'contact',
+			'default' => '+917417809360',
+			'type' => 'tel',
+		),
+	);
+
+	public function __construct() {
+		add_action( 'add_meta_boxes', array( $this, 'add_meta_boxes' ) );
+		add_action( 'save_post', array( $this, 'save_fields' ) );
+	}
+
+	public function add_meta_boxes() {
+		foreach ( $this->screen as $single_screen ) {
+			add_meta_box(
+				'otherdetail',
+				__( 'Other Detail', 'textdomain' ),
+				array( $this, 'meta_box_callback' ),
+				$single_screen,
+				'advanced',
+				'default'
+			);
+		}
+	}
+
+	public function meta_box_callback( $post ) {
+		wp_nonce_field( 'otherdetail_data', 'otherdetail_nonce' );
+		$this->field_generator( $post );
+	}
+
+	public function field_generator( $post ) {
+		$output = '';
+		foreach ( $this->meta_fields as $meta_field ) {
+			$label = '<label for="' . $meta_field['id'] . '">' . $meta_field['label'] . '</label>';
+			$meta_value = get_post_meta( $post->ID, $meta_field['id'], true );
+			if ( empty( $meta_value ) ) {
+				if ( isset( $meta_field['default'] ) ) {
+					$meta_value = $meta_field['default'];
+				}
+			}
+			switch ( $meta_field['type'] ) {
+				case 'radio':
+					$input = '<fieldset>';
+					$input .= '<legend class="screen-reader-text">' . $meta_field['label'] . '</legend>';
+					$i = 0;
+					foreach ( $meta_field['options'] as $key => $value ) {
+						$meta_field_value = !is_numeric( $key ) ? $key : $value;
+						$input .= sprintf(
+							'<label><input %s id=" %s" name="%s" type="radio" value="%s"> %s</label>%s',
+							$meta_value === $meta_field_value ? 'checked' : '',
+							$meta_field['id'],
+							$meta_field['id'],
+							$meta_field_value,
+							$value,
+							$i < count( $meta_field['options'] ) - 1 ? '<br>' : ''
+						);
+						$i++;
+					}
+					$input .= '</fieldset>';
+					break;
+				default:
+					$input = sprintf(
+						'<input %s id="%s" name="%s" type="%s" value="%s">',
+						$meta_field['type'] !== 'color' ? 'style="width: 100%"' : '',
+						$meta_field['id'],
+						$meta_field['id'],
+						$meta_field['type'],
+						$meta_value
+					);
+			}
+			$output .= $this->format_rows( $label, $input );
+		}
+		echo '<table class="form-table"><tbody>' . $output . '</tbody></table>';
+	}
+
+	public function format_rows( $label, $input ) {
+		return '<tr><th>'.$label.'</th><td>'.$input.'</td></tr>';
+	}
+
+	public function save_fields( $post_id ) {
+		if ( ! isset( $_POST['otherdetail_nonce'] ) )
+			return $post_id;
+		$nonce = $_POST['otherdetail_nonce'];
+		if ( !wp_verify_nonce( $nonce, 'otherdetail_data' ) )
+			return $post_id;
+		if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE )
+			return $post_id;
+		foreach ( $this->meta_fields as $meta_field ) {
+			if ( isset( $_POST[ $meta_field['id'] ] ) ) {
+				switch ( $meta_field['type'] ) {
+					case 'email':
+						$_POST[ $meta_field['id'] ] = sanitize_email( $_POST[ $meta_field['id'] ] );
+						break;
+					case 'text':
+						$_POST[ $meta_field['id'] ] = sanitize_text_field( $_POST[ $meta_field['id'] ] );
+						break;
+				}
+				update_post_meta( $post_id, $meta_field['id'], $_POST[ $meta_field['id'] ] );
+			} else if ( $meta_field['type'] === 'checkbox' ) {
+				update_post_meta( $post_id, $meta_field['id'], '0' );
+			}
+		}
+	}
+}
+
+if (class_exists('otherdetailMetabox')) {
+	new otherdetailMetabox;
+};
+
+// Meta Box Class: Other Details
+class otherdetailsMetabox {
+
+	private $screen = array(
+		'property',
+	);
+
+	private $meta_fields = array(
+		array(
+			'label' => 'Price',
+			'id' => 'price',
+			'default' => '₹ 00.00',
+			'type' => 'text',
+		),
+		array(
+			'label' => 'Property Type',
+			'id' => 'property-type',
+			'default' => 'Residential	',
+			'type' => 'radio',
+			'options' => array(
+				'Residential	',
+				'Commercial',
+				'Plot	',
+				'Rented',
+			),
+		),
+		array(
+			'label' => 'Ownership Type',
+			'id' => 'ownership-type',
+			'default' => 'Freehold',
+			'type' => 'radio',
+			'options' => array(
+				'Freehold',
+				'Leasehold',
+			),
+		),
+		array(
+			'label' => 'Transaction Type',
+			'id' => 'transaction-type',
+			'default' => 'New Property',
+			'type' => 'radio',
+			'options' => array(
+				'New Property',
+				'Resale',
+			),
+		),
+		array(
+			'label' => 'Area/Size',
+			'id' => 'area',
+			'default' => '00.00 Sr.Ft.',
+			'type' => 'text',
+		),
+		array(
+			'label' => 'Total Floors',
+			'id' => 'total-floors',
+			'type' => 'number',
+		),
+		array(
+			'label' => 'Allotment Floor',
+			'id' => 'allotment-floor',
+			'default' => '1',
+			'type' => 'text',
+		),
+		array(
+			'label' => 'Carpet Area',
+			'id' => 'carpet-area',
+			'default' => '00.00 Sr.Ft.',
+			'type' => 'text',
+		),
+		array(
+			'label' => 'Facing',
+			'id' => 'facing',
+			'default' => 'NORTH',
+			'type' => 'radio',
+			'options' => array(
+				'EAST',
+				'WEST',
+				'NORTH',
+				'SOUTH',
+				'FREE HOLD',
+			),
+		),
+		array(
+			'label' => 'Number of Balconies ',
+			'id' => 'balconies ',
+			'type' => 'number',
+		),
+		array(
+			'label' => 'Size of Balcony',
+			'id' => 'balcony-size',
+			'type' => 'text',
+		),
+		array(
+			'label' => 'Roof of TOP Access',
+			'id' => 'rooftop',
+			'type' => 'text',
+		),
+		array(
+			'label' => 'No of Bedrooms',
+			'id' => 'bedrooms',
+			'type' => 'text',
+		),
+		array(
+			'label' => 'No of Bathrooms',
+			'id' => 'bathrooms',
+			'type' => 'text',
+		),
+		array(
+			'label' => 'Vastu Compliance',
+			'id' => 'vastu',
+			'default' => 'Yes',
+			'type' => 'radio',
+			'options' => array(
+				'Yes',
+				'No',
+			),
+		),
+		array(
+			'label' => 'Heating/Cooling System',
+			'id' => 'ac',
+			'default' => 'Yes',
+			'type' => 'radio',
+			'options' => array(
+				'Yes',
+				'No',
+			),
+		),
+		array(
+			'label' => 'Registry/Title Details',
+			'id' => 'registry-detail',
+			'type' => 'text',
+		),
+		array(
+			'label' => 'Green Building Certification',
+			'id' => 'green-building-certificate',
+			'type' => 'text',
+		),
+		array(
+			'label' => 'Rental Yield (if applicable)',
+			'id' => 'rental-yield',
+			'type' => 'text',
+		),
+		array(
+			'label' => 'Monthly Maintenance Fees',
+			'id' => 'maintenance-fees',
+			'default' => '₹ 00.00',
+			'type' => 'text',
+		),
+		array(
+			'label' => 'Possession Status',
+			'id' => 'possession-status',
+			'default' => 'Ready to Move',
+			'type' => 'radio',
+			'options' => array(
+				'Ready to Move',
+				'Under Construction',
+				'Under Renovation',
+			),
+		),
+		array(
+			'label' => 'Furnishing Status',
+			'id' => 'furnishing-status',
+			'default' => 'Fully Furnished',
+			'type' => 'radio',
+			'options' => array(
+				'Fully Furnished',
+				'Semi-Furnished',
+				'Unfurnished',
+			),
+		),
+		array(
+			'label' => 'Plot Area',
+			'id' => 'plot-area',
+			'default' => '00.00 Sr.Ft.',
+			'type' => 'text',
+		),
+		array(
+			'label' => 'Available From',
+			'id' => 'available-from',
+			'type' => 'date',
+		),
+		array(
+			'label' => 'Property Age',
+			'id' => 'property-age',
+			'type' => 'text',
+		),
+		array(
+			'label' => 'Location',
+			'id' => 'location',
+			'type' => 'text',
+		),
+		array(
+			'label' => 'Nearby Landmarks',
+			'id' => 'landmarks',
+			'type' => 'text',
+		),
+		array(
+			'label' => 'Google Map',
+			'id' => 'map',
+			'type' => 'url',
+		),
+		array(
+			'label' => 'Distance from State Capital',
+			'id' => 'distance-state-capital',
+			'type' => 'text',
+		),
+		array(
+			'label' => 'Distance to Public Transport',
+			'id' => 'distance-public-transport',
+			'type' => 'text',
+		),
+		array(
+			'label' => 'Distance to Nearest Airport',
+			'id' => 'distance-nearest-airport',
+			'type' => 'text',
+		),
+		array(
+			'label' => 'Loan Facility Available',
+			'id' => 'loan',
+			'type' => 'text',
+		),
+		array(
+			'label' => 'Owner Contact Details (Email/Number)',
+			'id' => 'owner-contact',
+			'type' => 'text',
+		),
+		array(
+			'label' => 'Agent Contact Details (Email/Number)',
+			'id' => 'agent-contact',
+			'type' => 'text',
+		),
+		array(
+			'label' => 'Garage',
+			'id' => 'garage',
+			'default' => 'Yes',
+			'type' => 'radio',
+			'options' => array(
+				'Yes',
+				'No',
+			),
+		),
+		array(
+			'label' => 'Parking',
+			'id' => 'parking',
+			'default' => 'Yes',
+			'type' => 'radio',
+			'options' => array(
+				'Yes',
+				'No',
+			),
+		),
+		array(
+			'label' => 'Water Supply',
+			'id' => 'water-supply',
+			'default' => 'Muncipal',
+			'type' => 'radio',
+			'options' => array(
+				'Muncipal',
+				'Borewell',
+				'NA',
+			),
+		),
+		array(
+			'label' => 'Power Backup',
+			'id' => 'power-backup',
+			'default' => 'Yes',
+			'type' => 'radio',
+			'options' => array(
+				'Yes',
+				'No',
+			),
+		),
+		array(
+			'label' => 'CCTV',
+			'id' => 'cctv',
+			'default' => 'Yes',
+			'type' => 'radio',
+			'options' => array(
+				'Yes',
+				'No',
+			),
+		),
+		array(
+			'label' => 'Security Guards',
+			'id' => 'security-guards',
+			'default' => 'Yes',
+			'type' => 'radio',
+			'options' => array(
+				'Yes',
+				'No',
+			),
+		),
+		array(
+			'label' => 'Lift/Elevator',
+			'id' => 'lift',
+			'default' => 'Yes',
+			'type' => 'radio',
+			'options' => array(
+				'Yes',
+				'No',
+			),
+		),
+		array(
+			'label' => 'Pet Friendly',
+			'id' => 'pet-friendly',
+			'default' => 'Yes',
+			'type' => 'radio',
+			'options' => array(
+				'Yes',
+				'No',
+			),
+		),
+		array(
+			'label' => 'Swimming Pool Access',
+			'id' => 'swimmingpool',
+			'default' => 'Yes - Common Area',
+			'type' => 'radio',
+			'options' => array(
+				'Yes - Common Area',
+				'No',
+			),
+		),
+		array(
+			'label' => 'Gym Access',
+			'id' => 'gym',
+			'default' => 'Yes - Common Area',
+			'type' => 'radio',
+			'options' => array(
+				'Yes - Common Area',
+				'No',
+			),
+		),
+		array(
+			'label' => 'Garden/Play Area',
+			'id' => 'garden-play-area',
+			'default' => 'Yes - Common Area',
+			'type' => 'radio',
+			'options' => array(
+				'Yes - Common Area',
+				'No',
+			),
+		),
+		array(
+			'label' => 'Clubhouse Membership',
+			'id' => 'membership',
+			'default' => 'Yes - Extra Charges',
+			'type' => 'radio',
+			'options' => array(
+				'Yes - Extra Charges',
+				'No',
+			),
+		),
+	
+	);
+
+	public function __construct() {
+		add_action( 'add_meta_boxes', array( $this, 'add_meta_boxes' ) );
+		add_action( 'save_post', array( $this, 'save_fields' ) );
+	}
+
+	public function add_meta_boxes() {
+		foreach ( $this->screen as $single_screen ) {
+			add_meta_box(
+				'otherdetails',
+				__( 'Other Details', 'textdomain' ),
+				array( $this, 'meta_box_callback' ),
+				$single_screen,
+				'normal',
+				'default'
+			);
+		}
+	}
+
+	public function meta_box_callback( $post ) {
+		wp_nonce_field( 'otherdetails_data', 'otherdetails_nonce' );
+		$this->field_generator( $post );
+	}
+
+	public function field_generator( $post ) {
+		$output = '';
+		foreach ( $this->meta_fields as $meta_field ) {
+			$label = '<label for="' . $meta_field['id'] . '">' . $meta_field['label'] . '</label>';
+			$meta_value = get_post_meta( $post->ID, $meta_field['id'], true );
+			if ( empty( $meta_value ) ) {
+				if ( isset( $meta_field['default'] ) ) {
+					$meta_value = $meta_field['default'];
+				}
+			}
+			switch ( $meta_field['type'] ) {
+				case 'radio':
+					$input = '<fieldset>';
+					$input .= '<legend class="screen-reader-text">' . $meta_field['label'] . '</legend>';
+					$i = 0;
+					foreach ( $meta_field['options'] as $key => $value ) {
+						$meta_field_value = !is_numeric( $key ) ? $key : $value;
+						$input .= sprintf(
+							'<label><input %s id=" %s" name="%s" type="radio" value="%s"> %s</label>%s',
+							$meta_value === $meta_field_value ? 'checked' : '',
+							$meta_field['id'],
+							$meta_field['id'],
+							$meta_field_value,
+							$value,
+							$i < count( $meta_field['options'] ) - 1 ? '<br>' : ''
+						);
+						$i++;
+					}
+					$input .= '</fieldset>';
+					break;
+				case 'textarea':
+					$input = sprintf(
+						'<textarea style="width: 100%%" id="%s" name="%s" rows="5">%s</textarea>',
+						$meta_field['id'],
+						$meta_field['id'],
+						$meta_value
+					);
+					break;
+				default:
+					$input = sprintf(
+						'<input %s id="%s" name="%s" type="%s" value="%s">',
+						$meta_field['type'] !== 'color' ? 'style="width: 100%"' : '',
+						$meta_field['id'],
+						$meta_field['id'],
+						$meta_field['type'],
+						$meta_value
+					);
+			}
+			$output .= $this->format_rows( $label, $input );
+		}
+		echo '<table class="form-table"><tbody>' . $output . '</tbody></table>';
+	}
+
+	public function format_rows( $label, $input ) {
+		return '<tr><th>'.$label.'</th><td>'.$input.'</td></tr>';
+	}
+
+	public function save_fields( $post_id ) {
+		if ( ! isset( $_POST['otherdetails_nonce'] ) )
+			return $post_id;
+		$nonce = $_POST['otherdetails_nonce'];
+		if ( !wp_verify_nonce( $nonce, 'otherdetails_data' ) )
+			return $post_id;
+		if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE )
+			return $post_id;
+		foreach ( $this->meta_fields as $meta_field ) {
+			if ( isset( $_POST[ $meta_field['id'] ] ) ) {
+				switch ( $meta_field['type'] ) {
+					case 'email':
+						$_POST[ $meta_field['id'] ] = sanitize_email( $_POST[ $meta_field['id'] ] );
+						break;
+					case 'text':
+						$_POST[ $meta_field['id'] ] = sanitize_text_field( $_POST[ $meta_field['id'] ] );
+						break;
+				}
+				update_post_meta( $post_id, $meta_field['id'], $_POST[ $meta_field['id'] ] );
+			} else if ( $meta_field['type'] === 'checkbox' ) {
+				update_post_meta( $post_id, $meta_field['id'], '0' );
+			}
+		}
+	}
+}
+
+if (class_exists('otherdetailsMetabox')) {
+	new otherdetailsMetabox;
+};
+
+function convert_image_to_webp($metadata, $attachment_id) {
+    $upload_dir = wp_upload_dir();
+    $upload_path = $upload_dir['path'];
+
+    $attachment = get_post($attachment_id);
+    $file = get_attached_file($attachment_id);
+    $file_info = pathinfo($file);
+    $file_extension = $file_info['extension'];
+    $new_file = $upload_path . '/' . $file_info['filename'] . '.webp';
+
+    // Only process if the file is not already a WebP
+    if ($file_extension !== 'webp') {
+        $image = null;
+
+        // Load the image
+        switch ($file_extension) {
+            case 'jpg':
+            case 'jpeg':
+                $image = imagecreatefromjpeg($file);
+                break;
+            case 'png':
+                $image = imagecreatefrompng($file);
+                break;
+            case 'gif':
+                $image = imagecreatefromgif($file);
+                break;
+            default:
+                return $metadata; // Skip unsupported formats
+        }
+
+        if ($image) {
+            // Save the image as WebP
+            imagewebp($image, $new_file, 90); // 80 is the quality, you can adjust this
+            imagedestroy($image);
+
+            // Update metadata
+            $metadata['file'] = str_replace($file_info['basename'], basename($new_file), $metadata['file']);
+            $metadata['sizes'] = array_map(function($size) use ($new_file) {
+                return str_replace(basename($size['file']), basename($new_file), $size);
+            }, $metadata['sizes']);
+
+            // Remove the old file
+            @unlink($file);
+        }
+    }
+
+    return $metadata;
+}
+add_filter('wp_generate_attachment_metadata', 'convert_image_to_webp', 10, 2);

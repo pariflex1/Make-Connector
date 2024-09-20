@@ -1,0 +1,864 @@
+{
+    "name": "Facebook Leads",
+    "flow": [
+        {
+            "id": 5,
+            "module": "facebook-lead-ads:NewLeadMultiple",
+            "version": 2,
+            "parameters": {
+                "v": "2",
+                "fields": [
+                    "id",
+                    "ad_id",
+                    "ad_name",
+                    "adset_id",
+                    "adset_name",
+                    "campaign_id",
+                    "campaign_name",
+                    "created_time",
+                    "custom_disclaimer_responses",
+                    "field_data",
+                    "form_id",
+                    "home_listing",
+                    "is_organic",
+                    "partner_name",
+                    "platform",
+                    "retailer_item_id",
+                    "vehicle"
+                ],
+                "__IMTHOOK__": 295222
+            },
+            "mapper": {},
+            "metadata": {
+                "designer": {
+                    "x": 0,
+                    "y": 150
+                },
+                "restore": {
+                    "parameters": {
+                        "__IMTHOOK__": {
+                            "data": {
+                                "editable": "false"
+                            },
+                            "label": "My New Lead webhook"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "__IMTHOOK__",
+                        "type": "hook:facebook-lead-ads-new-event",
+                        "label": "Webhook",
+                        "required": true
+                    },
+                    {
+                        "name": "v",
+                        "type": "hidden"
+                    },
+                    {
+                        "name": "fields",
+                        "type": "select",
+                        "label": "Fields",
+                        "multiple": true,
+                        "validate": {
+                            "enum": [
+                                "id",
+                                "ad_id",
+                                "ad_name",
+                                "adset_id",
+                                "adset_name",
+                                "campaign_id",
+                                "campaign_name",
+                                "created_time",
+                                "custom_disclaimer_responses",
+                                "field_data",
+                                "form_id",
+                                "home_listing",
+                                "is_organic",
+                                "partner_name",
+                                "platform",
+                                "retailer_item_id",
+                                "vehicle"
+                            ]
+                        }
+                    }
+                ],
+                "interface": [
+                    {
+                        "name": "leadgenId",
+                        "type": "text",
+                        "label": "Lead ID"
+                    },
+                    {
+                        "name": "formId",
+                        "type": "text",
+                        "label": "Form ID"
+                    },
+                    {
+                        "name": "dateCreated",
+                        "type": "date",
+                        "label": "Date created"
+                    },
+                    {
+                        "name": "adId",
+                        "type": "text",
+                        "label": "Ad ID"
+                    },
+                    {
+                        "name": "pageId",
+                        "type": "text",
+                        "label": "Page ID"
+                    },
+                    {
+                        "name": "adgroupId",
+                        "type": "text",
+                        "label": "Ad group ID"
+                    },
+                    {
+                        "name": "data",
+                        "spec": [
+                            {
+                                "name": "आप_मशीन_के_मालिक_या_ऑपरेटर_हैं",
+                                "type": "array",
+                                "label": "आप मशीन के मालिक या ऑपरेटर हैं"
+                            },
+                            {
+                                "name": "full_name",
+                                "type": "text",
+                                "label": "Full name"
+                            },
+                            {
+                                "name": "phone_number",
+                                "type": "text",
+                                "label": "Phone number"
+                            },
+                            {
+                                "name": "city",
+                                "type": "text",
+                                "label": "City"
+                            },
+                            {
+                                "name": "state",
+                                "type": "text",
+                                "label": "State"
+                            }
+                        ],
+                        "type": "collection",
+                        "label": "Field data"
+                    },
+                    {
+                        "name": "isOrganic",
+                        "type": "boolean",
+                        "label": "Is organic"
+                    },
+                    {
+                        "name": "adName",
+                        "type": "text",
+                        "label": "Ad name"
+                    },
+                    {
+                        "name": "adsetId",
+                        "type": "text",
+                        "label": "Ad set ID"
+                    },
+                    {
+                        "name": "adsetName",
+                        "type": "text",
+                        "label": "Adset name"
+                    },
+                    {
+                        "name": "campaignId",
+                        "type": "text",
+                        "label": "Campaign ID"
+                    },
+                    {
+                        "name": "campaignName",
+                        "type": "text",
+                        "label": "Campaign name"
+                    },
+                    {
+                        "name": "customDisclaimerResponses",
+                        "type": "collection",
+                        "label": "Custom disclaimer responses"
+                    },
+                    {
+                        "name": "homeListing",
+                        "type": "collection",
+                        "label": "Home listing"
+                    },
+                    {
+                        "name": "partnerName",
+                        "type": "text",
+                        "label": "Partner name"
+                    },
+                    {
+                        "name": "platform",
+                        "type": "text",
+                        "label": "Platform"
+                    },
+                    {
+                        "name": "retailerItemId",
+                        "type": "text",
+                        "label": "Retailer item ID"
+                    },
+                    {
+                        "name": "vehicle",
+                        "type": "collection",
+                        "label": "Vehicle"
+                    }
+                ]
+            }
+        },
+        {
+            "id": 2,
+            "module": "google-sheets:addRow",
+            "version": 2,
+            "parameters": {
+                "__IMTCONN__": 863465
+            },
+            "mapper": {
+                "from": "drive",
+                "mode": "select",
+                "values": {
+                    "0": "{{formatDate(now; \"DD-MM-YYYY HH:mm\")}}",
+                    "1": "Form Leads",
+                    "2": "{{5.data.full_name}}",
+                    "3": "{{5.data.phone_number}}",
+                    "4": "{{5.data.city}} ({{5.data.state}})",
+                    "5": "{{5.data.`आप_मशीन_के_मालिक_या_ऑपरेटर_हैं`}}",
+                    "6": "https://wa.me/{{5.data.phone_number}}"
+                },
+                "sheetId": "Form Leads",
+                "spreadsheetId": "/1y4Y7XPI4I_WSxx6jgXjQY_y3hOu8y0h7FOVFBml2dE8",
+                "includesHeaders": true,
+                "insertDataOption": "INSERT_ROWS",
+                "valueInputOption": "USER_ENTERED",
+                "insertUnformatted": false
+            },
+            "metadata": {
+                "designer": {
+                    "x": 300,
+                    "y": 150
+                },
+                "restore": {
+                    "expect": {
+                        "from": {
+                            "label": "My Drive"
+                        },
+                        "mode": {
+                            "label": "Select by path"
+                        },
+                        "sheetId": {
+                            "label": "Form Leads"
+                        },
+                        "spreadsheetId": {
+                            "path": [
+                                "Over Contacts"
+                            ]
+                        },
+                        "includesHeaders": {
+                            "label": "Yes",
+                            "nested": [
+                                {
+                                    "name": "values",
+                                    "spec": [
+                                        {
+                                            "name": "0",
+                                            "type": "text",
+                                            "label": "Date (A)"
+                                        },
+                                        {
+                                            "name": "1",
+                                            "type": "text",
+                                            "label": "Lead Source (B)"
+                                        },
+                                        {
+                                            "name": "2",
+                                            "type": "text",
+                                            "label": "Name (C)"
+                                        },
+                                        {
+                                            "name": "3",
+                                            "type": "text",
+                                            "label": "Contact (D)"
+                                        },
+                                        {
+                                            "name": "4",
+                                            "type": "text",
+                                            "label": "City (E)"
+                                        },
+                                        {
+                                            "name": "5",
+                                            "type": "text",
+                                            "label": "Status (F)"
+                                        },
+                                        {
+                                            "name": "6",
+                                            "type": "text",
+                                            "label": "WhatsApp (G)"
+                                        },
+                                        {
+                                            "name": "7",
+                                            "type": "text",
+                                            "label": "Feedback (H)"
+                                        }
+                                    ],
+                                    "type": "collection",
+                                    "label": "Values"
+                                }
+                            ]
+                        },
+                        "insertDataOption": {
+                            "mode": "chose",
+                            "label": "Insert rows"
+                        },
+                        "valueInputOption": {
+                            "mode": "chose",
+                            "label": "User entered"
+                        },
+                        "insertUnformatted": {
+                            "mode": "chose"
+                        }
+                    },
+                    "parameters": {
+                        "__IMTCONN__": {
+                            "data": {
+                                "scoped": "true",
+                                "connection": "google"
+                            },
+                            "label": "My Google connection (dhanistadigital@gmail.com)"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "__IMTCONN__",
+                        "type": "account:google",
+                        "label": "Connection",
+                        "required": true
+                    }
+                ],
+                "expect": [
+                    {
+                        "name": "mode",
+                        "type": "select",
+                        "label": "Choose a Method",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                "select",
+                                "fromAll",
+                                "map"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "insertUnformatted",
+                        "type": "boolean",
+                        "label": "Unformatted",
+                        "required": true
+                    },
+                    {
+                        "name": "valueInputOption",
+                        "type": "select",
+                        "label": "Value input option",
+                        "validate": {
+                            "enum": [
+                                "USER_ENTERED",
+                                "RAW"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "insertDataOption",
+                        "type": "select",
+                        "label": "Insert data option",
+                        "validate": {
+                            "enum": [
+                                "INSERT_ROWS",
+                                "OVERWRITE"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "from",
+                        "type": "select",
+                        "label": "Choose a Drive",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                "drive",
+                                "share",
+                                "team"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "spreadsheetId",
+                        "type": "file",
+                        "label": "Spreadsheet ID",
+                        "required": true
+                    },
+                    {
+                        "name": "sheetId",
+                        "type": "select",
+                        "label": "Sheet Name",
+                        "required": true
+                    },
+                    {
+                        "name": "includesHeaders",
+                        "type": "select",
+                        "label": "Table contains headers",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                true,
+                                false
+                            ]
+                        }
+                    },
+                    {
+                        "name": "values",
+                        "spec": [
+                            {
+                                "name": "0",
+                                "type": "text",
+                                "label": "Date (A)"
+                            },
+                            {
+                                "name": "1",
+                                "type": "text",
+                                "label": "Lead Source (B)"
+                            },
+                            {
+                                "name": "2",
+                                "type": "text",
+                                "label": "Name (C)"
+                            },
+                            {
+                                "name": "3",
+                                "type": "text",
+                                "label": "Contact (D)"
+                            },
+                            {
+                                "name": "4",
+                                "type": "text",
+                                "label": "City (E)"
+                            },
+                            {
+                                "name": "5",
+                                "type": "text",
+                                "label": "Status (F)"
+                            },
+                            {
+                                "name": "6",
+                                "type": "text",
+                                "label": "WhatsApp (G)"
+                            },
+                            {
+                                "name": "7",
+                                "type": "text",
+                                "label": "Feedback (H)"
+                            }
+                        ],
+                        "type": "collection",
+                        "label": "Values"
+                    }
+                ]
+            }
+        },
+        {
+            "id": 7,
+            "module": "builtin:BasicRouter",
+            "version": 1,
+            "mapper": null,
+            "metadata": {
+                "designer": {
+                    "x": 600,
+                    "y": 150
+                }
+            },
+            "routes": [
+                {
+                    "flow": [
+                        {
+                            "id": 6,
+                            "module": "whatsapp-business-cloud:sendTemplateMessage",
+                            "version": 1,
+                            "parameters": {
+                                "__IMTCONN__": 863462
+                            },
+                            "filter": {
+                                "name": "",
+                                "conditions": [
+                                    [
+                                        {
+                                            "a": "{{5.data.`आप_मशीन_के_मालिक_या_ऑपरेटर_हैं`}}",
+                                            "b": "मालिक",
+                                            "o": "text:equal"
+                                        }
+                                    ],
+                                    [
+                                        {
+                                            "a": "{{5.data.`आप_मशीन_के_मालिक_या_ऑपरेटर_हैं`}}",
+                                            "b": "ऑपरेटर",
+                                            "o": "text:equal"
+                                        }
+                                    ]
+                                ]
+                            },
+                            "mapper": {
+                                "fromId": "153660454507150",
+                                "to": "{{5.data.phone_number}}",
+                                "messageTemplate": "partner_app::en_US",
+                                "header": {
+                                    "image": {
+                                        "id": "253714781076799"
+                                    }
+                                },
+                                "body": {
+                                    "body_0": "{{startcase(get(split(5.data.full_name; space); 1))}}"
+                                }
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 900,
+                                    "y": 0
+                                },
+                                "restore": {
+                                    "parameters": {
+                                        "__IMTCONN__": {
+                                            "label": "My WhatsApp Business Cloud connection (PariFlex)",
+                                            "data": {
+                                                "scoped": "true",
+                                                "connection": "whatsapp-business-cloud2"
+                                            }
+                                        }
+                                    },
+                                    "expect": {
+                                        "fromId": {
+                                            "mode": "chose",
+                                            "label": "Over (+91 83037 15063)"
+                                        },
+                                        "messageTemplate": {
+                                            "nested": [
+                                                {
+                                                    "name": "header",
+                                                    "spec": [
+                                                        {
+                                                            "name": "image",
+                                                            "spec": [
+                                                                {
+                                                                    "help": "Either `Media ID` or `Media URL` must be provided.",
+                                                                    "name": "id",
+                                                                    "type": "text",
+                                                                    "label": "Media ID"
+                                                                },
+                                                                {
+                                                                    "help": "Either `Media ID` or `Media URL` must be provided.",
+                                                                    "name": "link",
+                                                                    "type": "url",
+                                                                    "label": "Media URL"
+                                                                }
+                                                            ],
+                                                            "type": "collection",
+                                                            "label": "Image"
+                                                        }
+                                                    ],
+                                                    "type": "collection",
+                                                    "label": "Header"
+                                                },
+                                                {
+                                                    "name": "body",
+                                                    "spec": [
+                                                        {
+                                                            "type": "html",
+                                                            "label": "<pre>नमस्कार, *{{1}}* जी Over Machinery से सम्पर्क करने के लिए आपका धन्यवाद् 🙏\n\n🔥 यदि आप बेकहो लोडर मशीन मालिक या ऑपरेटर हैं, तो अपनी मशीन को हमारे एप पर रजिस्टर करें एवं ऑनलाईन आर्डर प्राप्त करें।\n\n📲 App Download करने के लिए लिंक पर क्लिक करें 👇</pre>"
+                                                        },
+                                                        {
+                                                            "name": "body_0",
+                                                            "type": "text",
+                                                            "label": "{{1}}",
+                                                            "required": true
+                                                        }
+                                                    ],
+                                                    "type": "collection",
+                                                    "label": "Body"
+                                                }
+                                            ],
+                                            "label": "partner_app (en_US)"
+                                        }
+                                    }
+                                },
+                                "parameters": [
+                                    {
+                                        "name": "__IMTCONN__",
+                                        "type": "account:whatsapp-business-cloud2",
+                                        "label": "Connection",
+                                        "required": true
+                                    }
+                                ],
+                                "expect": [
+                                    {
+                                        "name": "fromId",
+                                        "type": "select",
+                                        "label": "Sender ID",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "to",
+                                        "type": "text",
+                                        "label": "Receiver",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "messageTemplate",
+                                        "type": "select",
+                                        "label": "Message Template",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "header",
+                                        "type": "collection",
+                                        "label": "Header",
+                                        "spec": [
+                                            {
+                                                "name": "image",
+                                                "type": "collection",
+                                                "label": "Image",
+                                                "spec": [
+                                                    {
+                                                        "name": "id",
+                                                        "type": "text",
+                                                        "label": "Media ID"
+                                                    },
+                                                    {
+                                                        "name": "link",
+                                                        "type": "url",
+                                                        "label": "Media URL"
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "name": "body",
+                                        "type": "collection",
+                                        "label": "Body",
+                                        "spec": [
+                                            {
+                                                "name": "body_0",
+                                                "type": "text",
+                                                "label": "{{1}}",
+                                                "required": true
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "flow": [
+                        {
+                            "id": 8,
+                            "module": "whatsapp-business-cloud:sendTemplateMessage",
+                            "version": 1,
+                            "parameters": {
+                                "__IMTCONN__": 863462
+                            },
+                            "filter": {
+                                "name": "",
+                                "conditions": [
+                                    [
+                                        {
+                                            "a": "{{5.data.`आप_मशीन_के_मालिक_या_ऑपरेटर_हैं`}}",
+                                            "b": "कॉन्ट्रैक्टर",
+                                            "o": "text:equal"
+                                        }
+                                    ],
+                                    [
+                                        {
+                                            "a": "{{5.data.`आप_मशीन_के_मालिक_या_ऑपरेटर_हैं`}}",
+                                            "b": "अन्य",
+                                            "o": "text:equal"
+                                        }
+                                    ]
+                                ]
+                            },
+                            "mapper": {
+                                "fromId": "153660454507150",
+                                "to": "{{5.data.phone_number}}",
+                                "messageTemplate": "user_app_download::en_US",
+                                "header": {
+                                    "image": {
+                                        "id": "253714781076799"
+                                    }
+                                },
+                                "body": {
+                                    "body_0": "{{startcase(get(split(5.data.full_name; space); 1))}}"
+                                }
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 900,
+                                    "y": 300
+                                },
+                                "restore": {
+                                    "parameters": {
+                                        "__IMTCONN__": {
+                                            "label": "My WhatsApp Business Cloud connection (PariFlex)",
+                                            "data": {
+                                                "scoped": "true",
+                                                "connection": "whatsapp-business-cloud2"
+                                            }
+                                        }
+                                    },
+                                    "expect": {
+                                        "fromId": {
+                                            "mode": "chose",
+                                            "label": "Over (+91 83037 15063)"
+                                        },
+                                        "messageTemplate": {
+                                            "nested": [
+                                                {
+                                                    "name": "header",
+                                                    "spec": [
+                                                        {
+                                                            "name": "image",
+                                                            "spec": [
+                                                                {
+                                                                    "help": "Either `Media ID` or `Media URL` must be provided.",
+                                                                    "name": "id",
+                                                                    "type": "text",
+                                                                    "label": "Media ID"
+                                                                },
+                                                                {
+                                                                    "help": "Either `Media ID` or `Media URL` must be provided.",
+                                                                    "name": "link",
+                                                                    "type": "url",
+                                                                    "label": "Media URL"
+                                                                }
+                                                            ],
+                                                            "type": "collection",
+                                                            "label": "Image"
+                                                        }
+                                                    ],
+                                                    "type": "collection",
+                                                    "label": "Header"
+                                                },
+                                                {
+                                                    "name": "body",
+                                                    "spec": [
+                                                        {
+                                                            "type": "html",
+                                                            "label": "<pre>नमस्कार, *{{1}}* जी Over Machinery से सम्पर्क करने के लिए आपका धन्यवाद् 🙏\n\n🔥 यदि आप एक कॉन्ट्रैक्टर हैं या कंस्ट्रक्शन कम्पनी है, या फिर आपका कंस्ट्रक्शन वर्क है, और आपको किराए पर backhoe Loader मशीन की आवश्यकता है, तो Over - Online backhoe Loader Booking App  डाउनलोड करें! \n\n🔥 यदि आप backhoe Loader मशीन मालिक हैं, तो Over Partner-backhoe Loader Operator App डाउनलोड करें! \n\n📲 App Download करने के लिए लिंक पर क्लिक करें 👇</pre>"
+                                                        },
+                                                        {
+                                                            "name": "body_0",
+                                                            "type": "text",
+                                                            "label": "{{1}}",
+                                                            "required": true
+                                                        }
+                                                    ],
+                                                    "type": "collection",
+                                                    "label": "Body"
+                                                }
+                                            ],
+                                            "label": "user_app_download (en_US)"
+                                        }
+                                    }
+                                },
+                                "parameters": [
+                                    {
+                                        "name": "__IMTCONN__",
+                                        "type": "account:whatsapp-business-cloud2",
+                                        "label": "Connection",
+                                        "required": true
+                                    }
+                                ],
+                                "expect": [
+                                    {
+                                        "name": "fromId",
+                                        "type": "select",
+                                        "label": "Sender ID",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "to",
+                                        "type": "text",
+                                        "label": "Receiver",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "messageTemplate",
+                                        "type": "select",
+                                        "label": "Message Template",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "header",
+                                        "type": "collection",
+                                        "label": "Header",
+                                        "spec": [
+                                            {
+                                                "name": "image",
+                                                "type": "collection",
+                                                "label": "Image",
+                                                "spec": [
+                                                    {
+                                                        "name": "id",
+                                                        "type": "text",
+                                                        "label": "Media ID"
+                                                    },
+                                                    {
+                                                        "name": "link",
+                                                        "type": "url",
+                                                        "label": "Media URL"
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "name": "body",
+                                        "type": "collection",
+                                        "label": "Body",
+                                        "spec": [
+                                            {
+                                                "name": "body_0",
+                                                "type": "text",
+                                                "label": "{{1}}",
+                                                "required": true
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "metadata": {
+        "instant": true,
+        "version": 1,
+        "scenario": {
+            "roundtrips": 1,
+            "maxErrors": 3,
+            "autoCommit": true,
+            "autoCommitTriggerLast": true,
+            "sequential": false,
+            "confidential": false,
+            "dataloss": false,
+            "dlq": false,
+            "freshVariables": false
+        },
+        "designer": {
+            "orphans": []
+        },
+        "zone": "eu2.make.com"
+    }
+}

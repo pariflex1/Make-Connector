@@ -1,0 +1,8 @@
+function addsocialmedia() {
+
+global $post;
+$postId=$post->ID;
+
+echo "<img src='".get_post_meta($postId, "reel_image", true)."'>"; 
+}
+add_shortcode ("share", "addsocialmedia");

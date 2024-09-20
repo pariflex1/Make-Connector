@@ -1,0 +1,408 @@
+{
+    "name": "Send a Gmail email from a new Google Sheets row",
+    "flow": [
+        {
+            "id": 6,
+            "module": "google-sheets:watchUpdatedCells",
+            "version": 2,
+            "parameters": {
+                "__IMTHOOK__": 1020081
+            },
+            "mapper": {},
+            "metadata": {
+                "designer": {
+                    "x": 0,
+                    "y": 0
+                },
+                "restore": {
+                    "parameters": {
+                        "__IMTHOOK__": {
+                            "data": {
+                                "editable": "false"
+                            },
+                            "label": "My Edit webhook webhook"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "__IMTHOOK__",
+                        "type": "hook:google-sheets2",
+                        "label": "Webhook",
+                        "required": true
+                    }
+                ]
+            }
+        },
+        {
+            "id": 7,
+            "module": "woocommerce:UpdateVariation",
+            "version": 3,
+            "parameters": {
+                "__IMTCONN__": 2171422
+            },
+            "mapper": {
+                "id": "{{6.rowValues[].`1`}}",
+                "image": {},
+                "select": "map",
+                "status": "publish",
+                "productId": "{{6.rowValues[].`0`}}",
+                "salePrice": "{{6.rowValues[].`5`}}",
+                "dimensions": {},
+                "regularPrice": "{{6.rowValues[].`4`}}",
+                "stock_status": "instock"
+            },
+            "metadata": {
+                "designer": {
+                    "x": 300,
+                    "y": 0
+                },
+                "restore": {
+                    "expect": {
+                        "select": {
+                            "label": "Enter manually"
+                        },
+                        "status": {
+                            "mode": "chose",
+                            "label": "Publish"
+                        },
+                        "virtual": {
+                            "mode": "chose"
+                        },
+                        "metaData": {
+                            "mode": "chose"
+                        },
+                        "taxClass": {
+                            "mode": "chose",
+                            "label": "Empty"
+                        },
+                        "downloads": {
+                            "mode": "chose"
+                        },
+                        "taxStatus": {
+                            "mode": "chose",
+                            "label": "Empty"
+                        },
+                        "attributes": {
+                            "mode": "chose"
+                        },
+                        "backorders": {
+                            "mode": "chose",
+                            "label": "Empty"
+                        },
+                        "manageStock": {
+                            "mode": "chose"
+                        },
+                        "downloadable": {
+                            "mode": "chose"
+                        },
+                        "stock_status": {
+                            "mode": "chose",
+                            "label": "In stock"
+                        },
+                        "shippingClass": {
+                            "mode": "chose"
+                        }
+                    },
+                    "parameters": {
+                        "__IMTCONN__": {
+                            "data": {
+                                "scoped": "true",
+                                "connection": "woocommerce2"
+                            },
+                            "label": "My WooCommerce connection"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "__IMTCONN__",
+                        "type": "account:woocommerce2",
+                        "label": "Connection",
+                        "required": true
+                    }
+                ],
+                "expect": [
+                    {
+                        "name": "select",
+                        "type": "select",
+                        "label": "Enter a Product Variant ID",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                "map",
+                                "list"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "description",
+                        "type": "text",
+                        "label": "Description"
+                    },
+                    {
+                        "name": "sku",
+                        "type": "text",
+                        "label": "SKU"
+                    },
+                    {
+                        "name": "regularPrice",
+                        "type": "text",
+                        "label": "Regular Price"
+                    },
+                    {
+                        "name": "salePrice",
+                        "type": "text",
+                        "label": "Sale Price"
+                    },
+                    {
+                        "name": "dateOnSaleFrom",
+                        "type": "date",
+                        "label": "Date on Sale From"
+                    },
+                    {
+                        "name": "dateOnSaleTo",
+                        "type": "date",
+                        "label": "Date on Sale To"
+                    },
+                    {
+                        "name": "status",
+                        "type": "select",
+                        "label": "Status",
+                        "validate": {
+                            "enum": [
+                                "draft",
+                                "pending",
+                                "private",
+                                "publish"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "virtual",
+                        "type": "boolean",
+                        "label": "Virtual"
+                    },
+                    {
+                        "name": "downloadable",
+                        "type": "boolean",
+                        "label": "Downloadable"
+                    },
+                    {
+                        "name": "downloads",
+                        "spec": [
+                            {
+                                "name": "name",
+                                "type": "text",
+                                "label": "File Name",
+                                "required": true
+                            },
+                            {
+                                "name": "file",
+                                "type": "url",
+                                "label": "File URL",
+                                "required": true
+                            }
+                        ],
+                        "type": "array",
+                        "label": "Downloadable Files"
+                    },
+                    {
+                        "name": "downloadLimit",
+                        "type": "number",
+                        "label": "Download Limit"
+                    },
+                    {
+                        "name": "downloadExpiry",
+                        "type": "number",
+                        "label": "Download Expiry"
+                    },
+                    {
+                        "name": "taxStatus",
+                        "type": "select",
+                        "label": "Tax Status",
+                        "validate": {
+                            "enum": [
+                                "taxable",
+                                "shipping",
+                                "none"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "taxClass",
+                        "type": "select",
+                        "label": "Tax Class",
+                        "validate": {
+                            "enum": [
+                                "standard",
+                                "reduced-rate",
+                                "zero-rate"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "manageStock",
+                        "type": "boolean",
+                        "label": "Stock Management at Variation Level"
+                    },
+                    {
+                        "name": "stockQuantity",
+                        "type": "number",
+                        "label": "Stock Quantity"
+                    },
+                    {
+                        "name": "stock_status",
+                        "type": "select",
+                        "label": "Stock Status",
+                        "validate": {
+                            "enum": [
+                                "instock",
+                                "outofstock",
+                                "onbackorder"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "backorders",
+                        "type": "select",
+                        "label": "Backorders",
+                        "validate": {
+                            "enum": [
+                                "yes",
+                                "notify",
+                                "no"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "weight",
+                        "type": "text",
+                        "label": "Weight"
+                    },
+                    {
+                        "name": "dimensions",
+                        "spec": [
+                            {
+                                "name": "length",
+                                "type": "text",
+                                "label": "Length"
+                            },
+                            {
+                                "name": "width",
+                                "type": "text",
+                                "label": "Width"
+                            },
+                            {
+                                "name": "height",
+                                "type": "text",
+                                "label": "Height"
+                            }
+                        ],
+                        "type": "collection",
+                        "label": "Dimensions"
+                    },
+                    {
+                        "name": "shippingClass",
+                        "type": "select",
+                        "label": "Shipping Class"
+                    },
+                    {
+                        "name": "image",
+                        "spec": [
+                            {
+                                "name": "src",
+                                "type": "url",
+                                "label": "File URL"
+                            },
+                            {
+                                "name": "name",
+                                "type": "text",
+                                "label": "File Name"
+                            },
+                            {
+                                "name": "alt",
+                                "type": "text",
+                                "label": "Alt"
+                            }
+                        ],
+                        "type": "collection",
+                        "label": "Image"
+                    },
+                    {
+                        "name": "menuOrder",
+                        "type": "number",
+                        "label": "Menu Order"
+                    },
+                    {
+                        "name": "metaData",
+                        "spec": [
+                            {
+                                "name": "key",
+                                "type": "text",
+                                "label": "Key",
+                                "required": true
+                            },
+                            {
+                                "name": "value",
+                                "type": "text",
+                                "label": "Value",
+                                "required": true
+                            }
+                        ],
+                        "type": "array",
+                        "label": "Meta Data"
+                    },
+                    {
+                        "name": "productId",
+                        "type": "integer",
+                        "label": "Product ID",
+                        "required": true
+                    },
+                    {
+                        "name": "id",
+                        "type": "text",
+                        "label": "Variation ID",
+                        "required": true
+                    },
+                    {
+                        "name": "attributes",
+                        "spec": [
+                            {
+                                "name": "id",
+                                "type": "select",
+                                "label": "Attribute",
+                                "dynamic": true,
+                                "options": {
+                                    "store": []
+                                },
+                                "required": true
+                            }
+                        ],
+                        "type": "array",
+                        "label": "Attributes"
+                    }
+                ]
+            }
+        }
+    ],
+    "metadata": {
+        "instant": true,
+        "version": 1,
+        "scenario": {
+            "roundtrips": 1,
+            "maxErrors": 3,
+            "autoCommit": true,
+            "autoCommitTriggerLast": true,
+            "sequential": false,
+            "confidential": false,
+            "dataloss": false,
+            "dlq": false,
+            "freshVariables": false
+        },
+        "designer": {
+            "orphans": []
+        },
+        "zone": "eu1.make.com"
+    }
+}
